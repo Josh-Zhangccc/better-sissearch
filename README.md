@@ -94,14 +94,14 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课排表器。查课、排�
 
 ### 用户反馈与改进
 
-**关键发现（2026-11-24 收集）**：用户最看重的不是 class number，而是**可视化排表与冲突实时对齐**。class number 只是把“检索”这一步简化了；真正耗时间的是时间安排。
+**关键发现（2026-11-24 收集，2 位用户）**：一位高年级理工科同学最看重**可视化排表与冲突实时对齐**，class number 只是顺带简化检索；一位低年级心理学同学在简单体验后指出 class number 在 SIS 只能逐条输入，于是把“全部复制”改成逐条复制。
 
 **一位高年级同专业同学（室友）的实测**：他已知自己要上哪些课，约束是“没有早八、18 学分、留出周二晚上的足球训练”。用 BetterSISSearch **10 分钟**排好；同专业同学用传统方式（SIS 检索 + 手工比对）大约花 **2 小时**，主要卡在时间查重，不得不用平板 + 手写笔记录各门课的时间信息来找组合。之后他用 20–30 分钟做学习计划，并用本工具找到了可以加课的时间段。
 
 | 用户 | 使用场景 | 反馈 | 对应的改进 | 证据 |
 |---|---|---|---|---|
 | U1（高年级理工科，同专业，2026-11-24） | 完整选课流程：18 学分；无早八；留出周二晚足球训练 | 10 分钟排完；同学用 SIS 约 2 小时，卡在时间查重 | 待做：自动组合 / 不冲突 section 推荐、固定时间块 | 作者转述；已获匿名记录同意 |
-| U2（心理学方向学妹，2026-11-24） | 简单体验后给出流程建议 | class number 只能逐条输入；“全部复制”用不上，实际是复制一个、去 SIS 粘贴、再下一个 | 已做：每行单独复制 + “复制下一个”进度（0/2 → 2/2），全部复制降为备用 | 截图见 `assets/fig-confirm.png`；线上版已更新 |
+| U2（低年级心理学，2026-11-24） | 简单体验后给出流程建议 | class number 只能逐条输入；“全部复制”用不上，实际是复制一个、去 SIS 粘贴、再下一个 | 已做：每行单独复制 + “复制下一个”进度（0/2 → 2/2），全部复制降为备用 | 截图见 `assets/fig-confirm.png`；线上版已更新 |
 
 **根据反馈计划改进**（提交前完成并补到上表）：
 
@@ -196,14 +196,14 @@ No login. Nothing is written to SIS. No course data is modified.
 
 ### User feedback and improvements
 
-**Key finding (collected 2026-11-24)**: users value the **visual timetable and real-time conflict alignment** more than the class number. The class number only simplifies the search step; the real time sink is scheduling.
+**Key finding (collected 2026-11-24, 2 users)**: a senior STEM student valued the **visual timetable and real-time conflict alignment** most; the class number only simplified the search step. A lower-year psychology student, after a brief trial, pointed out that SIS takes class numbers one at a time, so “copy all” was replaced with one-by-one copying.
 
 **A senior classmate's test**: knowing which courses to take, with the constraints “no 8 a.m. classes, 18 credits, keep Tuesday evening for football training”, he built his timetable in **10 minutes** with BetterSISSearch. Classmates using SIS took about **2 hours**, mostly stuck on conflict checking, and had to use a tablet plus stylus to record course times while searching for combinations. He then spent 20–30 minutes on his study plan and used the tool to find slots for extra courses.
 
 | User | Context | Feedback | Change made | Evidence |
 |---|---|---|---|---|
 | U1 (senior STEM, same major, 2026-11-24) | Full enrolment flow: 18 credits; no 8 a.m.; Tuesday evening football | 10 minutes vs ~2 hours for peers; conflict checking was the blocker | Planned: conflict-free section combinations, fixed personal blocks | Author's summary; consent for anonymised record |
-| U2 (psychology major, junior, 2026-11-24) | Brief trial, then a workflow suggestion | Class numbers are entered one by one in SIS; “Copy all” is not usable; the real flow is copy one, paste in SIS, then the next | Done: per-row copy button + “Copy next” progress (0/2 → 2/2); copy-all kept as optional | Screenshot: `assets/fig-confirm.png`; live site updated |
+| U2 (lower-year psychology student, 2026-11-24) | Brief trial, then a workflow suggestion | Class numbers are entered one by one in SIS; “Copy all” is not usable; the real flow is copy one, paste in SIS, then the next | Done: per-row copy button + “Copy next” progress (0/2 → 2/2); copy-all kept as optional | Screenshot: `assets/fig-confirm.png`; live site updated |
 
 **Planned improvements from this feedback** (to be finished and added to the table before submission):
 
