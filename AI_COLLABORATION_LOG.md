@@ -198,3 +198,4 @@
 3. **README 增补图文**：加入“传统流程 vs BetterSISSearch”流程图，以及排课界面、class number 确认弹窗两张截图；流程图里的“自己的课表”用作者提供的周课表截图。
 4. **桌面视口实测**：用 ego 在 1400×813 视口走一遍 BetterSIS 侧流程（搜 MAT 1002 → 选 L01 LEC + T01 TUT → 确认），5 个操作、约 18 秒（自动化操作），得到 class number 1357 / 1367。
 5. **SIS 侧实测完成（11-24 10:07–10:10）**：人工登录后，从学生中心到 MAT 1002 加课成功，共 8 个页面、约 2 分 30 秒自动化操作：选学期（默认停在上一学期）→ Class Search（50 班警告）→ 50 个 section 中选 L01 → 先修/学分确认 → 加入购物车。截图见 `assets/sis-added.png`（姓名已模糊）。
+6. **公开部署（11-24）**：GitHub Pages 上线，站点 `https://josh-zhangccc.github.io/better-sissearch/`，源码 `https://github.com/Josh-Zhangccc/better-sissearch`；发布包只含站点与文档（排除 `logs/`、`.salt`、抓取脚本），已实测 498 门课加载、教程与图片可访问。
