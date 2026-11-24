@@ -51,6 +51,8 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课模拟器。查课、排�
 
 说明：传统流程中“对照自己的课表”这一步，用的是作者提供的周课表截图（见上图左侧）。SIS 侧为 2026-11-24 实测：登录后从学生中心到加课成功，共 8 个页面，示例课程 MAT 1002。
 
+一位高年级同专业同学的实测：已知要上的课时，**10 分钟**排完（无早八、18 学分、留出周二晚足球训练）；同专业同学用传统方式约 **2 小时**，主要卡在时间查重。
+
 ![SIS 实拍：50 个 section 与加课成功](assets/sis-added.png)
 
 ![BetterSISSearch 排课界面](assets/bettersis-plan.png)
@@ -92,12 +94,20 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课模拟器。查课、排�
 
 ### 用户反馈与改进
 
-**（待填：至少 2 位真实用户，取得同意后匿名记录，提交前完成）**
+**关键发现（2026-11-24 收集）**：用户最看重的不是 class number，而是**可视化排表与冲突实时对齐**。class number 只是把“检索”这一步简化了；真正耗时间的是时间安排。
+
+**一位高年级同专业同学（室友）的实测**：他已知自己要上哪些课，约束是“没有早八、18 学分、留出周二晚上的足球训练”。用 BetterSISSearch **10 分钟**排好；同专业同学用传统方式（SIS 检索 + 手工比对）大约花 **2 小时**，主要卡在时间查重，不得不用平板 + 手写笔记录各门课的时间信息来找组合。之后他用 20–30 分钟做学习计划，并用本工具找到了可以加课的时间段。
 
 | 用户 | 使用场景 | 反馈 | 对应的改进 | 证据 |
 |---|---|---|---|---|
-| U1 | | | | |
-| U2 | | | | |
+| U1（高年级同专业同学，2026-11-24） | 18 学分；无早八；留出周二晚足球训练 | 10 分钟排完；同学用 SIS 约 2 小时，卡在时间查重 | 待做：自动组合 / 不冲突 section 推荐、固定时间块 | 作者转述；已获匿名记录同意 |
+| U2（待补） | | | | |
+
+**根据反馈计划改进**（提交前完成并补到上表）：
+
+- 自动找“不冲突的 section 组合”，可选“不要早八”；
+- 支持个人固定安排（如周二晚足球训练），参与冲突判断；
+- 显示空闲时段，方便“找时间加课”。
 
 说明：反馈来自本学期选课期的真实使用。不公开用户身份。改进会同步到本仓库的提交记录与截图。
 
@@ -142,6 +152,8 @@ Same goal (example: MAT 1002, L01 LEC + T01 TUT), two paths:
 
 Note: the “own timetable” step in the traditional flow uses the author's weekly schedule screenshot (left side of the diagram). The SIS side was measured on 2026-11-24: from the student centre to a successful add, 8 pages, with MAT 1002 as the example.
 
+A senior classmate's test: with the courses already known, **10 minutes** to build a timetable (no 8 a.m., 18 credits, Tuesday evening football kept free). Classmates using SIS took about **2 hours**, mostly on conflict checking.
+
 ![SIS: 50 sections and a successful add](assets/sis-added.png)
 
 ![BetterSISSearch planning view](assets/bettersis-plan.png)
@@ -183,12 +195,20 @@ No login. Nothing is written to SIS. No course data is modified.
 
 ### User feedback and improvements
 
-**（To fill: at least 2 real users, anonymised with consent, before submission.）**
+**Key finding (collected 2026-11-24)**: users value the **visual timetable and real-time conflict alignment** more than the class number. The class number only simplifies the search step; the real time sink is scheduling.
+
+**A senior classmate's test**: knowing which courses to take, with the constraints “no 8 a.m. classes, 18 credits, keep Tuesday evening for football training”, he built his timetable in **10 minutes** with BetterSISSearch. Classmates using SIS took about **2 hours**, mostly stuck on conflict checking, and had to use a tablet plus stylus to record course times while searching for combinations. He then spent 20–30 minutes on his study plan and used the tool to find slots for extra courses.
 
 | User | Context | Feedback | Change made | Evidence |
 |---|---|---|---|---|
-| U1 | | | | |
-| U2 | | | | |
+| U1 (senior, same major, 2026-11-24) | 18 credits; no 8 a.m.; Tuesday evening football | 10 minutes vs ~2 hours for peers; conflict checking was the blocker | Planned: conflict-free section combinations, fixed personal blocks | Author's summary; consent for anonymised record |
+| U2 (pending) | | | | |
+
+**Planned improvements from this feedback** (to be finished and added to the table before submission):
+
+- Find conflict-free section combinations automatically, with a “no 8 a.m.” option;
+- Support fixed personal blocks (e.g. Tuesday evening football) in conflict checking;
+- Show free slots, to make it easy to find time for extra courses.
 
 Notes: feedback comes from real use during this term's enrolment period. User identities are not published. Improvements will be tracked in the repository history and screenshots.
 
