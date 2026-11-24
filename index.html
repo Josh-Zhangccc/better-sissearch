@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BetterSISSearch</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%236d5ce7'/%3E%3Ctext x='32' y='45' font-size='38' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='white'%3EB%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f5f6f9;
+  --surface:#ffffff;
+  --surface-2:#f7f8fc;
+  --surface-3:#eef0f7;
+  --line:#e4e7ee;
+  --line-2:#d6dae4;
+  --ink:#15171a;
+  --muted:#6b7280;
+  --accent:#6d5ce7;
+  --accent-2:#5a48d6;
+  --accent-soft:rgba(109,92,231,.1);
+  --accent-line:rgba(109,92,231,.42);
+  --danger:#de3d3d;
+  --danger-soft:rgba(222,61,61,.08);
+  --lec:#5b4bd6;
+  --lec-bg:rgba(109,92,231,.1);
+  --lec-line:rgba(109,92,231,.45);
+  --tut:#0b8f82;
+  --tut-bg:rgba(11,143,130,.1);
+  --tut-line:rgba(11,143,130,.42);
+  --sup:#b45309;
+  --sup-bg:rgba(180,83,9,.1);
+  --sup-line:rgba(180,83,9,.4);
+  --caramel:#b45309;
+  --shadow:0 1px 3px rgba(16,18,26,.06);
+}
+:root[data-theme="dark"]{
+  --bg:#0c0d11;
+  --surface:#14151b;
+  --surface-2:#1a1b23;
+  --surface-3:#20222c;
+  --line:#262833;
+  --line-2:#333644;
+  --ink:#e9eaf0;
+  --muted:#878b98;
+  --accent:#8b7cf6;
+  --accent-2:#a996ff;
+  --accent-soft:rgba(139,124,246,.14);
+  --accent-line:rgba(139,124,246,.45);
+  --danger:#f07474;
+  --danger-soft:rgba(240,116,116,.12);
+  --lec:#a996ff;
+  --lec-bg:rgba(139,124,246,.12);
+  --lec-line:rgba(139,124,246,.45);
+  --tut:#2dd4bf;
+  --tut-bg:rgba(45,212,191,.12);
+  --tut-line:rgba(45,212,191,.4);
+  --sup:#f0a64c;
+  --sup-bg:rgba(240,166,76,.12);
+  --sup-line:rgba(240,166,76,.4);
+  --caramel:#e6b45e;
+  --shadow:0 1px 3px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font:13.5px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,"Helvetica Neue",sans-serif;
+  color:var(--ink);background:var(--bg);overflow:hidden;-webkit-font-smoothing:antialiased}
+
+/* ---------- header ---------- */
+header{height:54px;display:flex;align-items:center;gap:13px;padding:0 18px;
+  background:var(--surface);border-bottom:1px solid var(--line);position:relative;z-index:5}
+.logo{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex:none;
+  background:linear-gradient(135deg,#6d5ce7,#a996ff);color:#fff;font-weight:800;font-size:13px;
+  box-shadow:0 2px 10px rgba(139,124,246,.35)}
+.brand{font-weight:750;font-size:14.5px;letter-spacing:-.015em;color:var(--ink)}
+.brand .thin{color:var(--muted);font-weight:500}
+.term{font-size:11.5px;color:var(--muted);padding:2px 9px;border:1px solid var(--line-2);border-radius:20px}
+.spacer{flex:1}
+button{font-family:inherit}
+.ghost{border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink);border-radius:9px;
+  padding:6px 12px;font-size:12px;cursor:pointer;transition:.15s}
+.ghost:hover{border-color:var(--accent-line);color:#fff}
+.ghost b{font-weight:650}
+.primary{border:none;border-radius:9px;padding:8px 16px;font-size:12.5px;font-weight:650;cursor:pointer;
+  color:#0c0d11;background:linear-gradient(135deg,#a996ff,#8b7cf6);transition:.15s;
+  box-shadow:0 2px 14px rgba(139,124,246,.3)}
+.primary:hover{filter:brightness(1.08)}
+.primary:disabled{background:var(--surface-3);color:var(--muted);cursor:default;box-shadow:none}
+
+/* ---------- layout ---------- */
+.layout{display:grid;grid-template-columns:344px 384px 1fr;height:calc(100vh - 55px)}
+aside.left{border-right:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;min-height:0}
+aside.mid{border-right:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;min-height:0}
+main{padding:14px;overflow:auto;background:var(--bg)}
+
+/* ---------- search + filters ---------- */
+.searchwrap{padding:13px 14px 8px}
+#q{width:100%;padding:9px 12px;border:1px solid var(--line-2);border-radius:10px;font-size:13px;
+  outline:none;background:var(--surface-2);color:var(--ink)}
+#q::placeholder{color:var(--muted)}
+#q:focus{border-color:var(--accent-line);box-shadow:0 0 0 3px var(--accent-soft)}
+.filterbar{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 10px}
+.fchip{border:1px solid var(--line-2);background:var(--surface-2);border-radius:20px;padding:4px 11px;
+  font-size:11.5px;color:var(--muted);cursor:pointer;transition:.15s}
+.fchip:hover{border-color:var(--accent-line);color:var(--ink)}
+.fchip.on{border-color:var(--accent-line);color:var(--accent-2);background:var(--accent-soft)}
+.fchip .cnt{font-size:10px;opacity:.85}
+.resetchip{margin-left:auto;border:none;background:none;color:var(--muted);font-size:11px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.panel{display:none;margin:0 14px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);
+  max-height:186px;overflow:auto;padding:9px 11px}
+.panel.show{display:block}
+.panel label{display:flex;align-items:center;gap:8px;font-size:12px;padding:3px 2px;color:var(--ink);cursor:pointer}
+.panel input{accent-color:var(--accent);width:13px;height:13px}
+.panel .hint{font-size:11px;color:var(--muted);padding:2px 2px 6px}
+.trange{display:flex;align-items:center;gap:7px;padding:3px 2px 6px}
+.trange select{flex:1;padding:5px 7px;border:1px solid var(--line-2);border-radius:7px;background:var(--surface);color:var(--ink);font-size:12px}
+.trange span{font-size:11px;color:var(--muted)}
+
+/* ---------- pinned ---------- */
+.selectedHead{display:flex;align-items:center;gap:8px;padding:9px 14px 5px;border-top:1px solid var(--line)}
+.selectedHead .t{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.selectedHead .n{font-size:11px;color:var(--accent-2)}
+#pinnedList{overflow:auto;max-height:27vh;padding:2px 14px 8px;border-bottom:1px solid var(--line)}
+.pcard{border:1px solid var(--line-2);border-left:3px solid var(--accent);border-radius:10px;
+  padding:7px 10px;margin-bottom:6px;background:var(--surface-2);cursor:pointer;transition:.15s}
+.pcard:hover{background:var(--surface-3);border-color:var(--accent-line)}
+.pcard.active{border-color:var(--accent-line);background:var(--accent-soft)}
+.pcard .r1{display:flex;align-items:center;gap:6px}
+.pcard .code{font-weight:700;font-size:12px;flex:1;color:var(--ink)}
+.pcard .remove{border:1px solid var(--line-2);background:var(--surface);color:var(--muted);border-radius:7px;padding:2px 9px;font-size:10.5px;cursor:pointer;line-height:1.4}
+.pcard .remove:hover{border-color:var(--danger);color:var(--danger)}
+.pcard .x:hover{color:var(--danger)}
+.pcard .meta{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcard .meta b{color:var(--accent-2);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.pcard.empty{color:var(--muted);border-style:dashed;border-left-color:var(--line-2);text-align:center;font-size:11.5px;padding:13px;cursor:default;background:transparent}
+
+/* ---------- course list ---------- */
+.listHead{display:flex;justify-content:space-between;padding:9px 14px 5px;font-size:10.5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+#results{overflow:auto;flex:1;padding:2px 14px 16px;display:flex;flex-direction:column;gap:6px}
+.ccard{display:flex;gap:9px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line-2);border-radius:11px;
+  background:var(--surface-2);cursor:pointer;transition:.13s}
+.ccard:hover{border-color:var(--accent-line);background:var(--surface-3);transform:translateY(-1px)}
+.ccard.sel{border-color:var(--accent-line);background:var(--accent-soft)}
+.ccard.active{box-shadow:inset 3px 0 0 var(--accent)}
+.ccard .body{flex:1;min-width:0}
+.ccard .code{font-weight:700;font-size:12.5px;color:var(--ink);letter-spacing:-.01em}
+.ccard .tag{font-size:9px;font-weight:800;letter-spacing:.06em;color:var(--accent-2);vertical-align:2px;margin-left:5px}
+.ccard .ttl{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ccard .meta{font-size:10.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{color:var(--muted);font-size:12px;text-align:center;padding:26px 10px}
+
+/* ---------- detail (mid) ---------- */
+.detailEmpty{margin:auto;padding:30px 24px;text-align:center;color:var(--muted);font-size:12px;line-height:1.7}
+.dhead{padding:16px 16px 12px;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(139,124,246,.07),transparent)}
+.dhead .code{font-size:18px;font-weight:800;letter-spacing:-.025em;color:var(--ink)}
+.dhead .ttl{font-size:12.5px;color:var(--muted);margin-top:2px}
+.dhead .meta{font-size:10.5px;color:var(--muted);margin-top:6px}
+#detail{display:flex;flex-direction:column;min-height:0;flex:1}
+#detailBody{overflow:auto;padding:11px 12px 14px;flex:1}
+.seclist{display:flex;flex-direction:column;gap:6px}
+.secrow{border:1px solid var(--line-2);border-radius:11px;padding:9px 11px;background:var(--surface-2);cursor:pointer;transition:.13s}
+.secrow:hover{border-color:var(--accent-line);background:var(--surface-3)}
+.secrow.current{border-color:var(--accent-line);background:var(--accent-soft)}
+.secrow.conflict{border-color:rgba(240,116,116,.4);background:var(--danger-soft)}
+.secrow .l1{display:flex;align-items:center;gap:8px}
+.secrow .name{font-weight:700;font-size:12px;flex:1;color:var(--ink)}
+.secrow .cn{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:var(--accent-2);font-weight:700}
+.secrow .l2{font-size:11px;color:var(--muted);margin-top:3px}
+.secrow .l3{font-size:10.5px;color:var(--muted);margin-top:2px}
+.secrow .badge{font-size:9px;font-weight:800;letter-spacing:.05em;color:var(--danger)}
+.secrow .pick{font-size:9.5px;font-weight:800;letter-spacing:.05em;color:var(--accent-2)}
+.dfoot{border-top:1px solid var(--line);padding:10px 14px;font-size:10.5px;color:var(--muted)}
+.hintline{font-size:11px;color:var(--muted);margin:0 0 9px}
+.typehead{font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin:10px 0 5px}
+.typehead:first-child{margin-top:0}
+
+/* ---------- timetable ---------- */
+.grid{position:relative;display:grid;grid-template-columns:46px repeat(5,1fr);grid-template-rows:26px repeat(13,1fr);
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  height:calc(100vh - 82px);min-height:520px;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.grid .corner{border-bottom:1px solid var(--line)}
+.grid .dayhead{text-align:center;font-size:11.5px;color:var(--muted);border-bottom:1px solid var(--line);
+  border-left:1px solid var(--line);padding-top:6px;font-weight:700;letter-spacing:.02em}
+.grid .hourlabel{font-size:10.5px;color:var(--muted);text-align:right;padding-right:7px;border-bottom:1px dashed var(--line)}
+.grid .cell{border-left:1px solid var(--line);border-bottom:1px dashed var(--line)}
+.block{position:absolute;border-radius:8px;padding:4px 6px;font-size:10.5px;line-height:1.25;overflow:hidden;
+  border:1.5px solid var(--lec-line);background:var(--lec-bg);color:var(--lec);cursor:pointer;
+  backdrop-filter:blur(1px)}
+.block.type-LEC{border-color:var(--lec-line);background:var(--lec-bg);color:var(--lec)}
+.block.type-TUT{border-color:var(--tut-line);background:var(--tut-bg);color:var(--tut)}
+.block.type-SUP{border-color:var(--sup-line);background:var(--sup-bg);color:var(--sup)}
+.block.ghost{border-style:dashed;opacity:.45}
+.block.ghost.covered{opacity:.2}
+.block.current{box-shadow:0 0 0 2px var(--accent);z-index:4}
+.block:hover{filter:brightness(1.05)}
+.block b{display:block;font-size:11px;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.block .meta{opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px}
+.block.conflict{border:1.5px solid rgba(240,116,116,.75);background:var(--danger-soft);color:var(--danger)}
+.block.conflict b{padding-right:17px}
+.block.conflict::after{content:attr(data-cf);position:absolute;right:4px;top:3px;font-size:8.5px;font-weight:800;
+  line-height:1.15;padding:0 3px;border-radius:5px;background:rgba(240,116,116,.22);color:var(--danger)}
+
+/* ---------- modals ---------- */
+.modal{position:fixed;inset:0;background:rgba(6,7,10,.62);backdrop-filter:blur(3px);display:none;
+  align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal.show{display:flex}
+.sheet{background:var(--surface);border:1px solid var(--line-2);border-radius:18px;padding:26px;
+  width:min(460px,100%);box-shadow:0 30px 80px rgba(0,0,0,.6);max-height:86vh;overflow:auto}
+.sheet h2{margin:0 0 5px;font-size:18px;letter-spacing:-.01em;color:var(--ink)}
+.sheet p{margin:0 0 18px;color:var(--muted);font-size:12.5px}
+.yearOpts{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.yearOpts button{border:1px solid var(--line-2);background:var(--surface-2);border-radius:12px;padding:14px 11px;
+  font-size:13px;cursor:pointer;text-align:left;color:var(--ink);transition:.15s}
+.yearOpts button:hover{border-color:var(--accent-line);background:var(--accent-soft)}
+.yearOpts button .sub{display:block;font-size:10.5px;color:var(--muted);margin-top:2px}
+.codes{display:flex;flex-direction:column;gap:6px;margin:6px 0 18px}
+.coderow{display:flex;align-items:center;gap:10px;border:1px solid var(--line-2);border-radius:11px;
+  padding:9px 11px;background:var(--surface-2)}
+.coderow .c{font-weight:700;font-size:12.5px;flex:1;color:var(--ink)}
+.coderow .s{font-size:11px;color:var(--muted)}
+.coderow .n{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:800;font-size:15px;color:var(--accent-2)}
+.sheet .actions{display:flex;gap:9px}
+.sheet .actions button{flex:1}
+.sheet .attr{border:1px solid var(--line-2);border-radius:10px;background:var(--surface-2);padding:10px 12px;
+  font-size:12px;line-height:1.55;color:var(--ink);margin:0 0 12px}
+.sheet .fine{font-size:11px;line-height:1.6;color:var(--muted);margin:0 0 9px}
+.copyNote{font-size:11px;color:var(--muted);margin-top:12px}
+.ring{border-color:var(--accent)!important;animation:ringpulse 1.6s infinite}
+@keyframes ringpulse{0%,100%{box-shadow:0 0 0 0 rgba(109,92,231,.5)}50%{box-shadow:0 0 0 6px rgba(109,92,231,.12)}}
+#guideModal{z-index:60}
+body.guide-open header{z-index:61}
+body.guide-open header button{opacity:.35;pointer-events:none}
+body.guide-open header a.ghost{opacity:1;pointer-events:auto}
+
+/* scrollbars */
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:#2c2f3a;border-radius:8px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:#3a3e4c}
+::-webkit-scrollbar-track{background:transparent}
+
+
+/* ---------- small screens ---------- */
+@media (max-width:900px){
+  html,body{height:auto}
+  body{overflow:auto}
+  header{position:sticky;top:0;padding:0 10px;gap:8px;height:50px}
+  .term{display:none}
+  #yearBtn{display:none}
+  header .ghost{padding:5px 9px;font-size:11.5px}
+  header .primary{padding:7px 11px;font-size:11.5px}
+  .layout{display:block;height:auto}
+  aside.left,aside.mid{width:auto;border-right:none;border-bottom:1px solid var(--line)}
+  aside.left{height:auto}
+  #pinnedList{max-height:none}
+  #results{overflow:auto;flex:none;max-height:50vh}
+  .panel{max-height:180px}
+  .detailEmpty{padding:22px 14px}
+  main{padding:10px;overflow-x:auto;overflow-y:hidden}
+  .grid{height:58vh;min-height:360px;min-width:560px}
+}
+@media (max-width:520px){
+  .brand{display:none}
+  .grid{min-width:520px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">B</div>
+  <div class="brand">Better<span class="thin">SIS</span>Search</div>
+  <div class="term" id="term"></div>
+  <div class="spacer"></div>
+  <button class="ghost" id="langBtn" title="Language">EN</button>
+  <button class="ghost" id="themeBtn" title="Toggle light / dark">🌙</button>
+  <a class="ghost" href="tutorial.html" style="text-decoration:none" data-i18n="guide">Guide</a>
+  <button class="ghost" id="aboutBtn" data-i18n="about">About</button>
+  <button class="ghost" id="yearBtn"><span data-i18n="year">Year</span>: <b id="yearVal">—</b></button>
+  <button class="primary" id="confirmBtn" disabled data-i18n="confirm">Confirm selection</button>
+</header>
+
+<div class="layout">
+  <!-- LEFT: filter + find -->
+  <aside class="left">
+    <div class="searchwrap">
+      <input id="q" placeholder="Find course code, title, or instructor…" autocomplete="off" data-i18n-ph="searchPh">
+    </div>
+    <div class="filterbar" id="filterbar">
+      <button class="fchip" data-f="subject"><span data-i18n="subject">Subject</span> <span class="cnt" id="cnt-subject"></span></button>
+      <button class="fchip" data-f="level"><span data-i18n="level">Level</span> <span class="cnt" id="cnt-level"></span></button>
+      <button class="fchip" data-f="day"><span data-i18n="day">Day</span> <span class="cnt" id="cnt-day"></span></button>
+      <button class="fchip" data-f="time"><span data-i18n="time">Time</span> <span class="cnt" id="cnt-time"></span></button>
+      <button class="fchip" data-f="instructor"><span data-i18n="instructor">Instructor</span> <span class="cnt" id="cnt-instructor"></span></button>
+      <button class="resetchip" id="resetBtn" data-i18n="reset">Reset</button>
+    </div>
+    <div class="panel" id="panel-subject"></div>
+    <div class="panel" id="panel-level"></div>
+    <div class="panel" id="panel-day"></div>
+    <div class="panel" id="panel-time"></div>
+    <div class="panel" id="panel-instructor"></div>
+
+    <div class="selectedHead"><span class="t" data-i18n="pinned">Pinned</span><span class="n" id="selCount">0</span></div>
+    <div id="pinnedList"></div>
+
+    <div class="listHead"><span data-i18n="courses">Courses</span><span id="listCount"></span></div>
+    <div id="results"></div>
+  </aside>
+
+  <!-- MIDDLE: detail / time picker -->
+  <aside class="mid">
+    <div id="detail"><div class="detailEmpty">Pick a course on the left to see its sections and times.</div></div>
+  </aside>
+
+  <!-- RIGHT: timetable -->
+  <main>
+    <div class="grid" id="grid"></div>
+  </main>
+</div>
+
+<!-- guide hint modal (first visit) -->
+<div class="modal" id="guideModal">
+  <div class="sheet">
+    <h2 data-i18n="firstTime">First time here?</h2>
+    <div class="langrow"><button class="langbtn" data-lang="en">English</button><button class="langbtn" data-lang="zh">中文</button></div>
+    <p data-i18n="firstHint">Open the Guide in the top right. It shows how to search courses, pick sections, and copy your class numbers into SIS.</p>
+    <div class="actions"><button class="primary" id="guideOk" data-i18n="gotIt">Got it</button></div>
+  </div>
+</div>
+
+<!-- year modal -->
+<div class="modal show" id="yearModal">
+  <div class="sheet">
+    <h2 data-i18n="yearQ">What is your year of study?</h2>
+    <p data-i18n="yearHint">Asked once, so you never have to pick it again in the SIS course search.</p>
+    <div class="yearOpts" id="yearOpts">
+      <button data-y="Year 1"><span data-i18n="y1">Year 1</span><span class="sub" data-i18n="undergraduate">Undergraduate</span></button>
+      <button data-y="Year 2"><span data-i18n="y2">Year 2</span><span class="sub" data-i18n="undergraduate">Undergraduate</span></button>
+      <button data-y="Year 3"><span data-i18n="y3">Year 3</span><span class="sub" data-i18n="undergraduate">Undergraduate</span></button>
+      <button data-y="Year 4"><span data-i18n="y4">Year 4</span><span class="sub" data-i18n="undergraduate">Undergraduate</span></button>
+      <button data-y="Postgraduate" style="grid-column:1/-1"><span data-i18n="postgrad">Postgraduate</span><span class="sub" data-i18n="masters">Master's / PhD</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- confirm modal -->
+<div class="modal" id="confirmModal">
+  <div class="sheet">
+    <h2 data-i18n="classNumbers">Your class numbers</h2>
+    <p><span data-i18n="pasteHint">Paste these into the SIS enrollment cart. Confirmed for</span> <b id="confYear">—</b>.</p>
+    <div class="codes" id="codes"></div>
+    <div class="actions">
+      <button class="ghost" id="closeConfirm" data-i18n="back">Back</button>
+      <button class="primary" id="copyCodes" data-i18n="copyAll">Copy all</button>
+    </div>
+    <div class="copyNote" data-i18n="assocNote">For courses with LEC and TUT, SIS checks whether the combination is valid.</div>
+    <div class="copyNote" data-i18n="snapshot">Course data is a static snapshot. Final availability is decided by SIS.</div>
+  </div>
+</div>
+
+<!-- about / attribution modal -->
+<div class="modal" id="aboutModal">
+  <div class="sheet">
+    <h2 data-i18n="aboutT">About BetterSISSearch</h2>
+    <p data-i18n="aboutP">A read-only course planner for CUHK-SZ students. Search courses, build a timetable, check conflicts, and copy the 4-digit class numbers.</p>
+    <div class="attr">
+      <div><b>2026 AI Vibe Coding 大赛</b></div>
+      <div>主办单位｜香港中文大学（深圳）人文社科学院跨文化交流学科部</div>
+      <div style="margin-top:6px"><b>2026 AI Vibe Coding Competition</b></div>
+      <div>Presented by the Division of Intercultural Communication</div>
+      <div>School of Humanities and Social Science</div>
+      <div>The Chinese University of Hong Kong, Shenzhen</div>
+    </div>
+    <p class="fine">个人参赛作品，不代表主办单位或学校的官方立场。<br>An individual entry. It does not represent the organiser or the University.</p>
+    <p class="fine">课程数据 = 2026-27 Term 2 静态快照（2026-11-23 抓取），仅含 open 班级，最终以 SIS 为准。<br>Course data: 2026-27 Term 2 snapshot, scraped 2026-11-23, open classes only. SIS is authoritative.</p>
+    <p class="fine">反馈 / Feedback: 125090969@link.cuhk.edu.cn</p>
+    <div class="actions"><button class="primary" id="aboutOk" data-i18n="gotIt">Got it</button></div>
+  </div>
+</div>
+
+<script>
+const DAYS = ['Mo','Tu','We','Th','Fr'];
+const I18N={
+ en:{remove:'Remove',unitCourse:'courses',pinnedTag:'SELECTED',year:'Year',guide:'Guide',about:'About',confirm:'Confirm selection',theme:'Toggle light / dark',lang:'中',
+  searchPh:'Find course code, title, or instructor…',
+  subject:'Subject',level:'Level',day:'Day',time:'Time',instructor:'Instructor',reset:'Reset',
+  subjectCode:'Subject code',courseLevel:'Course level',dayWithClass:'Day with class',
+  fullyInside:'Show courses fully inside',from:'from',to:'to',
+  pinned:'Selected',noCourses:'No courses selected yet',courses:'Courses',
+  pickCourse:'Pick a course on the left to see its sections and times.',
+  pickOne:'Pick one section per type. Each one drops into your timetable.',
+  conflictsAllowed:'Conflicts are allowed. Clashing blocks are marked red.',
+  notSelected:'not selected',picked:'picked',noMatch:'No matching courses',
+  classNumbers:'Your class numbers',pasteHint:'Paste these into the SIS enrollment cart. Confirmed for',
+  back:'Back',copyAll:'Copy all',copied:'Copied ✓',
+  snapshot:'Course data is a static snapshot. Final availability is decided by SIS.',assocNote:'For courses with LEC and TUT, SIS checks whether the combination is valid.',
+  yearQ:'What is your year of study?',yearHint:'Asked once, so you never have to pick it again in the SIS course search.',
+  y1:'Year 1',y2:'Year 2',y3:'Year 3',y4:'Year 4',postgrad:'Postgraduate',
+  undergraduate:'Undergraduate',masters:"Master's / PhD",
+  firstTime:'First time here?',firstHint:'Open the Guide in the top right. It shows how to search courses, pick sections, and copy your class numbers into SIS.',
+  gotIt:'Got it',aboutT:'About BetterSISSearch',aboutP:'A read-only course planner for CUHK-SZ students. Search courses, build a timetable, check conflicts, and copy the 4-digit class numbers.',conflict:'CONFLICT',selected:'SELECTED',select:'Select',noFixed:'No fixed meeting'},
+ zh:{remove:'取消选择',unitCourse:'门',pinnedTag:'已选',year:'年级',guide:'指南',about:'关于',confirm:'确认选课',theme:'切换明暗',lang:'EN',
+  searchPh:'搜索课程代码、名称或教师…',
+  subject:'学科',level:'年级',day:'星期',time:'时间',instructor:'教师',reset:'重置',
+  subjectCode:'学科代码',courseLevel:'课程年级',dayWithClass:'上课星期',
+  fullyInside:'课程时间完全位于',from:'从',to:'到',
+  pinned:'已选',noCourses:'还没有选课',courses:'课程',
+  pickCourse:'在左侧选择课程，查看它的 section 和时间。',
+  pickOne:'每种类型选一个 section，会直接进入课表。',
+  conflictsAllowed:'允许冲突，重叠的时间块会标红。',
+  notSelected:'未选',picked:'已选',noMatch:'没有匹配的课程',
+  classNumbers:'你的 class number',pasteHint:'粘贴到 SIS 选课购物车。年级：',
+  back:'返回',copyAll:'全部复制',copied:'已复制 ✓',
+  snapshot:'课程数据为静态快照，最终以 SIS 为准。',assocNote:'含 LEC 和 TUT 的课程，组合是否有效以 SIS 校验为准。',
+  yearQ:'你的年级？',yearHint:'只需选择一次，之后不用在 SIS 里重复选。',
+  y1:'大一',y2:'大二',y3:'大三',y4:'大四',postgrad:'研究生',
+  undergraduate:'本科',masters:'硕士 / 博士',
+  firstTime:'第一次来？',firstHint:'先看右上角的指南。里面讲了怎么搜课、选 section、把 class number 复制到 SIS。',
+  gotIt:'我知道了',aboutT:'关于 BetterSISSearch',aboutP:'面向 CUHK-SZ 学生的只读选课规划工具。搜课、排表、查冲突，复制 4 位 class number。',conflict:'冲突',selected:'已选',select:'选',noFixed:'无固定时间'}
+};
+let lang=localStorage.getItem('bss.lang')||'en';
+function t(k){ const d=I18N[lang]||I18N.en; return d[k]||I18N.en[k]||k; }
+function yearLabel(y){
+  const map={'Year 1':'y1','Year 2':'y2','Year 3':'y3','Year 4':'y4','Postgraduate':'postgrad'};
+  return t(map[y])||y;
+}
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n);});
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{el.placeholder=t(el.dataset.i18nPh);});
+  const lb=document.getElementById('langBtn'); if(lb) lb.textContent=t('lang');
+  document.documentElement.lang=lang==='zh'?'zh-CN':'en';
+}
+
+const DAY_LABEL = {Mo:'Mon',Tu:'Tue',We:'Wed',Th:'Thu',Fr:'Fri',Sa:'Sat',Su:'Sun'};
+const START_H = 8, END_H = 21;
+const LS = {year:'bss.year', sel:'bss.selected.v3'};
+
+let DATA = null;
+let year = localStorage.getItem(LS.year) || '';
+let selected = [];            // [{code, classNumber}]  — pinned = exactly this
+let currentCode = null;       // course shown in the right detail panel
+let filters = {subject:new Set(), level:new Set(), day:new Set(), time:new Set(), instructor:new Set()};
+let timeRange = {start:'', end:''};
+let openPanel = null;
+let confirmed = false;
+
+const $ = s => document.querySelector(s);
+const toMin = t => { const [h,m]=t.split(':').map(Number); return h*60+m; };
+const pad = n => String(n).padStart(2,'0');
+
+function saveSel(){ localStorage.setItem(LS.sel, JSON.stringify(selected)); }
+function course(code){ return DATA.courses.find(c=>c.code===code); }
+function section(c,cn){ return c.sections.find(s=>s.class_number===cn); }
+function meetingsOf(p){ return pickedSections(p.code).flatMap(x=>x.section.meetings); }
+function overlap(a,b){ return a.day===b.day && toMin(a.start)<toMin(b.end) && toMin(b.start)<toMin(a.end); }
+function isSelected(code){ return selected.some(p=>p.code===code); }
+function selOf(code){ return selected.find(p=>p.code===code); }
+function levelOf(c){ const m=c.catalog.match(/^\d/); return m ? c.catalog[0]+'000' : 'Other'; }
+function allSelectedMeetings(){ return selected.flatMap(meetingsOf); }
+
+/* ---------------- filters ---------------- */
+function courseMatchesFilters(c){
+  if(filters.subject.size && !filters.subject.has(c.subject)) return false;
+  if(filters.level.size && !filters.level.has(levelOf(c))) return false;
+  if(filters.day.size && !c.sections.some(s=>s.meetings.some(m=>filters.day.has(m.day)))) return false;
+  if(timeRange.start && timeRange.end){
+    const fits=c.sections.some(s=>s.meetings.length && s.meetings.every(m=>toMin(m.start)>=toMin(timeRange.start) && toMin(m.end)<=toMin(timeRange.end)));
+    if(!fits) return false;
+  }
+  if(filters.instructor.size && !c.sections.some(s=>filters.instructor.has(s.instructor||'Staff'))) return false;
+  return true;
+}
+let SUBJECTS=null;
+function subjects(){ if(!SUBJECTS) SUBJECTS=[...new Set(DATA.courses.map(c=>c.subject))]; return SUBJECTS; }
+function courseMatchesQuery(c,q){
+  if(!q) return true;
+  const ql=q.trim().toLowerCase();
+  if(!ql) return true;
+  const code=c.code.toLowerCase();
+  const subj=code.split(' ')[0];
+  const looksLikeSubject=/^[a-z]{2,3}$/.test(ql) && subjects().some(s=>s.toLowerCase().startsWith(ql));
+  if(looksLikeSubject) return subj.startsWith(ql) || code.includes(ql);
+  const words=s=>s.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+  if(code.includes(ql)) return true;
+  if(words(c.title).some(w=>w.startsWith(ql))) return true;
+  return c.sections.some(x=>words(x.instructor||'').some(w=>w.startsWith(ql)));
+}
+
+function buildFilters(){
+  const subjects=[...new Set(DATA.courses.map(c=>c.subject))].sort();
+  $('#panel-subject').innerHTML='<div class="hint" data-i18n="subjectCode">Subject code</div>'+subjects.map(s=>
+    `<label><input type="checkbox" data-f="subject" value="${s}"> ${s} <span style="color:var(--muted);font-size:10.5px">(${DATA.courses.filter(c=>c.subject===s).length})</span></label>`).join('');
+
+  const levels=[...new Set(DATA.courses.map(levelOf))].sort();
+  $('#panel-level').innerHTML='<div class="hint" data-i18n="courseLevel">Course level</div>'+levels.map(l=>
+    `<label><input type="checkbox" data-f="level" value="${l}"> ${l}-level</label>`).join('');
+
+  const dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  $('#panel-day').innerHTML='<div class="hint" data-i18n="dayWithClass">Day with class</div>'+DAYS.map((d,i)=>
+    `<label><input type="checkbox" data-f="day" value="${d}"> ${dayNames[i]}</label>`).join('');
+
+  const grid=[];
+  for(let m=8*60+30;m<=21*60;m+=30) grid.push(pad(Math.floor(m/60))+':'+pad(m%60));
+  $('#panel-time').innerHTML=`<div class="hint" data-i18n="fullyInside">Show courses fully inside</div>
+    <div class="trange">
+      <select id="tmStart"><option value="" data-i18n="from">from</option>${grid.map(t=>`<option value="${t}">${t}</option>`).join('')}</select>
+      <span>to</span>
+      <select id="tmEnd"><option value="" data-i18n="to">to</option>${grid.map(t=>`<option value="${t}">${t}</option>`).join('')}</select>
+    </div>`;
+
+  const instr=[...new Set(DATA.courses.flatMap(c=>c.sections.map(s=>s.instructor||'Staff')))].sort();
+  $('#panel-instructor').innerHTML='<div class="hint">Instructor</div>'+instr.map(i=>
+    `<label><input type="checkbox" data-f="instructor" value="${i}"> ${i}</label>`).join('');
+
+  for(const p of ['subject','level','day','instructor']){
+    $(`#panel-${p}`).addEventListener('change',e=>{
+      if(e.target.type!=='checkbox') return;
+      filters[p]=new Set([...$(`#panel-${p}`).querySelectorAll('input:checked')].map(x=>x.value));
+      syncChips(); renderList();
+    });
+  }
+  $('#tmStart').onchange=()=>{ timeRange.start=$('#tmStart').value; syncChips(); renderList(); };
+  $('#tmEnd').onchange=()=>{ timeRange.end=$('#tmEnd').value; syncChips(); renderList(); };
+  syncChips();
+}
+function syncChips(){
+  for(const p of ['subject','level','day','instructor']){
+    const n=filters[p].size;
+    $(`#cnt-${p}`).textContent=n?`(${n})`:'';
+    document.querySelector(`.fchip[data-f="${p}"]`).classList.toggle('on',n>0);
+  }
+  const on=!!(timeRange.start && timeRange.end);
+  $('#cnt-time').textContent=on?`${timeRange.start}–${timeRange.end}`:'';
+  document.querySelector('.fchip[data-f="time"]').classList.toggle('on',on);
+}
+document.querySelectorAll('.fchip').forEach(b=>b.onclick=()=>{
+  const p=b.dataset.f;
+  openPanel=(openPanel===p)?null:p;
+  for(const q of ['subject','level','day','time','instructor'])
+    $(`#panel-${q}`).classList.toggle('show',q===openPanel);
+});
+$('#resetBtn').onclick=()=>{
+  filters={subject:new Set(),level:new Set(),day:new Set(),time:new Set(),instructor:new Set()};
+  timeRange={start:'',end:''};
+  document.querySelectorAll('.panel input').forEach(i=>i.checked=false);
+  if($('#tmStart')) $('#tmStart').value='';
+  if($('#tmEnd')) $('#tmEnd').value='';
+  $('#q').value=''; openPanel=null;
+  for(const q of ['subject','level','day','time','instructor']) $(`#panel-${q}`).classList.remove('show');
+  syncChips(); renderList();
+};
+
+/* ---------------- selection ---------------- */
+function pickSection(code, cn){
+  const c=course(code); const s=c&&section(c,cn); if(!s) return;
+  let p=selOf(code);
+  if(!p){ p={code, byType:{}}; selected.push(p); }
+  p.byType[s.type]=cn;
+  saveSel(); renderAll();
+}
+function pickedOf(code){ const p=selOf(code); return p && p.byType ? p.byType : {}; }
+function pickedSections(code){
+  const c=course(code); if(!c) return [];
+  const byType=pickedOf(code);
+  return Object.keys(byType).map(t=>({type:t, classNumber:byType[t], section:section(c,byType[t])})).filter(x=>x.section);
+}
+function removeCourse(code){
+  selected=selected.filter(p=>p.code!==code);
+  saveSel(); renderAll();
+}
+
+function focusDetail(){
+  if(window.matchMedia('(max-width:900px)').matches){
+    const m=document.querySelector('aside.mid');
+    if(m) m.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+/* ---------------- left: pinned ---------------- */
+function renderPinned(){
+  const box=$('#pinnedList');
+  $('#selCount').textContent=`${selected.length} ${t('unitCourse')}`;
+  if(!selected.length){ box.innerHTML='<div class="pcard empty">'+t('noCourses')+'</div>'; return; }
+  box.innerHTML='';
+  for(const p of selected){
+    const c=course(p.code); if(!c) continue;
+    const sects=pickedSections(p.code);
+    const label=sects.map(x=>`${x.section.section} ${x.type}`).join(' + ')||'not selected';
+    const nums=sects.map(x=>x.classNumber).join(' / ');
+    const d=document.createElement('div');
+    d.className='pcard'+(currentCode===p.code?' active':'');
+    d.innerHTML=`<div class="r1"><span class="code">${c.code}</span>
+        <button class="remove">${t('remove')}</button></div>
+      <div class="meta">${label} · <b>${nums}</b></div>`;
+    d.querySelector('.remove').onclick=e=>{e.stopPropagation();removeCourse(p.code);};
+    d.onclick=()=>{ currentCode=p.code; renderAll(); focusDetail(); };
+    box.appendChild(d);
+  }
+}
+
+/* ---------------- left: list ---------------- */
+function renderList(){
+  const q=$('#q').value.trim();
+  let list=DATA.courses.filter(c=>courseMatchesFilters(c)&&courseMatchesQuery(c,q));
+  list.sort((a,b)=>(isSelected(b.code)?1:0)-(isSelected(a.code)?1:0)||a.code.localeCompare(b.code));
+  $('#listCount').textContent=`${list.length}`;
+  const box=$('#results');
+  box.innerHTML=list.length?'':'<div class="empty">'+t('noMatch')+'</div>';
+  for(const c of list){
+    const isSel=isSelected(c.code);
+    const d=document.createElement('div');
+    d.className='ccard'+(isSel?' sel':'')+(currentCode===c.code?' active':'');
+    const tstr=c.sections.slice(0,3).map(s=>s.meetings.map(m=>m.day+' '+m.start).join(',')||'—').join(' · ');
+    d.innerHTML=`<div class="body">
+        <div class="code">${c.code} ${isSel?'<span class="tag">'+t('pinnedTag')+'</span>':''}</div>
+        <div class="ttl">${c.title}</div>
+        <div class="meta">${c.sections.length} sections · ${tstr}</div>
+      </div>`;
+    d.onclick=()=>{ if(isSelected(c.code)) removeCourse(c.code); else { currentCode=c.code; renderAll(); focusDetail(); } };
+    box.appendChild(d);
+  }
+}
+
+/* ---------------- right: detail ---------------- */
+function renderDetail(){
+  const box=$('#detail');
+  const c=currentCode?course(currentCode):null;
+  if(!c){ box.innerHTML='<div class="detailEmpty">'+t('pickCourse')+'</div>'; return; }
+  const byType=pickedOf(c.code);
+  const otherM=selected.filter(p=>p.code!==c.code).flatMap(meetingsOf);
+  const types=[...new Set(c.sections.map(s=>s.type))];
+  const groups=types.map(ty=>{
+    const rows=c.sections.filter(s=>s.type===ty).map(s=>{
+      const pick=byType[ty]===s.class_number;
+      const conflict=s.meetings.some(m=>otherM.some(o=>overlap(m,o)));
+      const times=s.meetings.map(m=>`${DAY_LABEL[m.day]} ${m.start}–${m.end}`).join(' / ')||t('noFixed');
+      return `<div class="secrow${pick?' current':''}${conflict?' conflict':''}" data-cn="${s.class_number}">
+        <div class="l1"><span class="name">${s.section} ${s.type}</span>
+          ${conflict?'<span class="badge">'+t('conflict')+'</span>':''}
+          ${pick?'<span class="pick">'+t('selected')+'</span>':'<span class="pick">'+t('select')+'</span>'}
+          <span class="cn">${s.class_number}</span></div>
+        <div class="l2">${times}</div>
+        <div class="l3">${s.room||'—'} · ${s.instructor||'—'}</div>
+      </div>`;
+    }).join('');
+    return `<div class="typehead">${ty}</div>${rows}`;
+  }).join('');
+  const pickedLabel=types.filter(ty=>byType[ty]).map(ty=>`${ty} ${byType[ty]}`).join(' · ');
+  box.innerHTML=`<div class="dhead">
+      <div class="code">${c.code}</div>
+      <div class="ttl">${c.title}</div>
+      <div class="meta">${c.subject} · ${c.sections.length} sections · ${pickedLabel?t('picked')+' '+pickedLabel:t('notSelected')}</div>
+    </div>
+    <div id="detailBody"><div class="hintline">${t('pickOne')}</div>
+      <div class="seclist">${groups}</div></div>
+    <div class="dfoot">${t('conflictsAllowed')}</div>`;
+  box.querySelectorAll('.secrow').forEach(r=>r.onclick=()=>pickSection(c.code, r.dataset.cn));
+}
+
+/* ---------------- timetable ---------------- */
+function renderGrid(){
+  const g=$('#grid'); g.innerHTML='';
+  g.appendChild(el('div','corner',''));
+  for(const d of DAYS) g.appendChild(el('div','dayhead',DAY_LABEL[d]));
+  for(let h=START_H;h<END_H;h++){
+    g.appendChild(el('div','hourlabel',pad(h)+':00'));
+    for(let i=0;i<DAYS.length;i++) g.appendChild(el('div','cell',''));
+  }
+  const items=[];
+  for(const p of selected){
+    const c=course(p.code); if(!c) continue;
+    for(const ps of pickedSections(p.code))
+      for(const m of ps.section.meetings) items.push({p,c,s:ps.section,m});
+  }
+  function place(it,ghost){
+    const di=DAYS.indexOf(it.m.day); if(di<0) return;
+    const s0=toMin(it.m.start), e0=toMin(it.m.end);
+    if(e0<=START_H*60||s0>=END_H*60) return;
+    const topF=(Math.max(s0,START_H*60)-START_H*60)/((END_H-START_H)*60);
+    const hF=(Math.min(e0,END_H*60)-Math.max(s0,START_H*60))/((END_H-START_H)*60);
+    const clash=items.filter(o=>overlap(it.m,o.m)).length;
+    const conflict=!ghost && clash>1;
+    const covered=ghost&&clash>0;
+    const b=el('div','block type-'+it.s.type+(conflict?' conflict':'')+(ghost?' ghost':'')+(covered?' covered':'')+(!ghost&&it.c.code===currentCode?' current':''));
+    b.style.left=`calc(46px + (100% - 46px) * ${di/DAYS.length})`;
+    b.style.width=`calc((100% - 46px) / ${DAYS.length} - 4px)`;
+    b.style.top=`calc(26px + (100% - 26px) * ${topF})`;
+    b.style.height=`calc((100% - 26px) * ${Math.max(hF,.03)})`;
+    b.style.marginLeft='2px';
+    if(ghost) b.style.zIndex='1';
+    if(conflict) b.dataset.cf='×'+clash;
+    if(!covered) b.innerHTML=`<b>${it.c.code}</b><div class="meta">${it.s.section} · ${it.m.start}–${it.m.end}</div>`;
+    b.title=(ghost?'click to pin: ':'')+`${it.c.code} ${it.c.title}\n${it.s.section} ${it.s.type} (${it.s.class_number})\n${it.m.raw}`+(conflict?`\n\n${clash} ${t('unitCourse')} ${t('conflict')}`:'');
+    b.onclick=e=>{
+      e.stopPropagation();
+      if(ghost){ pickSection(it.c.code, it.s.class_number); return; }
+      const group=items.filter(o=>overlap(it.m,o.m));
+      if(group.length<=1){ currentCode=it.c.code; renderAll(); return; }
+      const idx=group.findIndex(o=>o.c.code===currentCode);
+      currentCode=group[(idx+1)%group.length].c.code;
+      renderAll();
+    };
+    g.appendChild(b);
+  }
+  for(const it of items) place(it,false);
+  if(currentCode){
+    const c=course(currentCode);
+    if(c){
+      const byType=pickedOf(currentCode);
+      for(const s of c.sections){
+        if(byType[s.type]===s.class_number) continue;
+        for(const m of s.meetings) place({p:null,c,s,m},true);
+      }
+    }
+  }
+}
+function el(tag,cls,txt){const d=document.createElement(tag);if(cls)d.className=cls;if(txt)d.textContent=txt;return d;}
+document.querySelector('main').addEventListener('click', e=>{
+  if(e.target.closest('.block')) return;
+  if(currentCode){ currentCode=null; renderAll(); }
+});
+document.querySelector('aside.mid').addEventListener('click', e=>{
+  if(e.target.closest('.secrow')) return;
+  if(currentCode){ currentCode=null; renderAll(); }
+});
+function renderAll(){renderPinned();renderList();renderDetail();renderGrid();$('#confirmBtn').disabled=!selected.length;}
+
+/* ---------------- confirm ---------------- */
+$('#confirmBtn').onclick=()=>{
+  $('#confYear').textContent=year||'—';
+  const box=$('#codes'); box.innerHTML='';
+  for(const p of selected){
+    const c=course(p.code);
+    for(const x of pickedSections(p.code)){
+      const d=el('div','coderow');
+      d.innerHTML=`<span class="c">${c?c.code:p.code}</span><span class="s">${x.section.section+' '+x.type}</span><span class="n">${x.classNumber}</span>`;
+      box.appendChild(d);
+    }
+  }
+  $('#confirmModal').classList.add('show');
+  confirmed=true; renderGrid();
+};
+$('#closeConfirm').onclick=()=>{$('#confirmModal').classList.remove('show');confirmed=false;renderGrid();};
+$('#copyCodes').onclick=async()=>{
+  const text=selected.flatMap(p=>pickedSections(p.code).map(x=>x.classNumber)).join('\n');
+  try{await navigator.clipboard.writeText(text);}
+  catch{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
+  const b=$('#copyCodes');b.textContent=t('copied');setTimeout(()=>b.textContent=t('copyAll'),1200);
+};
+
+/* ---------------- year ---------------- */
+function setYear(y){year=y;localStorage.setItem(LS.year,y);$('#yearVal').textContent=yearLabel(y);$('#yearModal').classList.remove('show');}
+$('#yearOpts').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setYear(b.dataset.y);});
+$('#yearBtn').onclick=()=>$('#yearModal').classList.add('show');
+
+/* ---------------- theme ---------------- */
+let theme = localStorage.getItem('bss.theme') || 'light';
+function applyTheme(t){
+  theme = t;
+  document.documentElement.dataset.theme = t;
+  $('#themeBtn').textContent = t==='light' ? '🌙' : '☀️';
+  localStorage.setItem('bss.theme', t);
+}
+applyTheme(theme);
+$('#themeBtn').onclick = () => applyTheme(theme==='light' ? 'dark' : 'light');
+$('#langBtn').onclick = () => { lang = lang==='zh' ? 'en' : 'zh'; localStorage.setItem('bss.lang', lang); applyI18n(); renderAll(); syncLangBtns(); };
+function syncLangBtns(){ document.querySelectorAll('.langbtn').forEach(x=>x.classList.toggle('on', x.dataset.lang===lang)); }
+document.querySelectorAll('.langbtn').forEach(b=>b.onclick=()=>{ lang=b.dataset.lang; localStorage.setItem('bss.lang',lang); applyI18n(); renderAll(); syncLangBtns(); });
+syncLangBtns();
+
+/* ---------------- boot ---------------- */
+(async function(){
+  try{
+    const r=await fetch('data/courses.json');
+    DATA=await r.json();
+  }catch(e){
+    $('#results').innerHTML='<div class="empty">Could not load data/courses.json — open this page through a local http server.</div>';
+    return;
+  }
+  try{selected=JSON.parse(localStorage.getItem(LS.sel))||[];}catch{selected=[];}
+  selected=selected.map(p=>{
+    if(p.byType) return p;
+    if(p.classNumber){ const c=course(p.code); const s=c&&section(c,p.classNumber); return {code:p.code, byType:{[s?s.type:'SUP']:p.classNumber}}; }
+    return null;
+  }).filter(Boolean).filter(p=>course(p.code));
+  $('#term').textContent=`${DATA.term} · ${DATA.count} courses`;
+  const seenGuide=localStorage.getItem('bss.seenGuide');
+  if(seenGuide){
+    if(year){$('#yearVal').textContent=yearLabel(year);$('#yearModal').classList.remove('show');}
+  }else{
+    $('#yearModal').classList.remove('show');
+    $('#guideModal').classList.add('show');
+    document.body.classList.add('guide-open');
+    document.querySelector('a[href="tutorial.html"]').classList.add('ring');
+  }
+  applyI18n(); buildFilters(); renderAll();
+  $('#q').addEventListener('input',renderList);
+  $('#guideOk').onclick=()=>{
+    localStorage.setItem('bss.seenGuide','1');
+    $('#guideModal').classList.remove('show');
+    document.body.classList.remove('guide-open');
+    document.querySelector('a[href="tutorial.html"]').classList.remove('ring');
+    if(!year) $('#yearModal').classList.add('show');
+    else $('#yearVal').textContent=yearLabel(year);
+  };
+  $('#aboutBtn').onclick=()=>{
+    $('#aboutModal').classList.add('show');
+  };
+  $('#aboutOk').onclick=()=>{
+    $('#aboutModal').classList.remove('show');
+  };
+})();
+</script>
+</body>
+</html>

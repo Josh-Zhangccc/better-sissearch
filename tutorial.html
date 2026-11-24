@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to use BetterSISSearch</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%236d5ce7'/%3E%3Ctext x='32' y='45' font-size='38' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='white'%3EB%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f5f6f9; --surface:#ffffff; --surface-2:#f7f8fc; --surface-3:#eef0f7;
+  --line:#e4e7ee; --line-2:#d6dae4; --ink:#15171a; --muted:#6b7280;
+  --accent:#6d5ce7; --accent-2:#5a48d6; --accent-soft:rgba(109,92,231,.1);
+  --shadow:0 10px 28px rgba(16,18,26,.08);
+}
+:root[data-theme="dark"]{
+  --bg:#0c0d11; --surface:#14151b; --surface-2:#1a1b23; --surface-3:#20222c;
+  --line:#262833; --line-2:#333644; --ink:#e9eaf0; --muted:#878b98;
+  --accent:#8b7cf6; --accent-2:#a996ff; --accent-soft:rgba(139,124,246,.14);
+  --shadow:0 10px 28px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,"Helvetica Neue",sans-serif;
+  color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+header{height:54px;display:flex;align-items:center;gap:13px;padding:0 18px;background:var(--surface);
+  border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.logo{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex:none;
+  background:linear-gradient(135deg,#6d5ce7,#a996ff);color:#fff;font-weight:800;font-size:13px}
+.brand{font-weight:750;font-size:14.5px}
+.brand .thin{color:var(--muted);font-weight:500}
+.spacer{flex:1}
+.ghost{border:1px solid var(--line-2);background:var(--surface);color:var(--ink);border-radius:9px;
+  padding:6px 12px;font-size:12px;cursor:pointer;text-decoration:none}
+.ghost:hover{border-color:var(--accent);color:var(--accent-2)}
+.page{max-width:880px;margin:0 auto;padding:34px 22px 70px}
+.hero{margin-bottom:28px}
+.hero h1{font-size:28px;line-height:1.25;letter-spacing:-.03em;margin:0 0 12px;font-weight:800}
+.hero p{color:var(--muted);font-size:14.5px;max-width:620px;margin:0}
+.hero p b{color:var(--ink)}
+.step{display:grid;grid-template-columns:40px 1fr;gap:16px;padding:24px 0;border-top:1px solid var(--line)}
+.num{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent-2);
+  font-weight:800;font-size:14px;display:grid;place-items:center}
+.step h2{font-size:16px;letter-spacing:-.01em;margin:1px 0 6px;font-weight:750}
+.step p{color:var(--muted);margin:0 0 12px;font-size:13.5px;max-width:620px}
+.step p b{color:var(--ink)}
+.shot{border:1px solid var(--line-2);border-radius:12px;overflow:hidden;background:var(--surface);
+  box-shadow:var(--shadow)}
+.shot img{display:block;width:100%;height:auto}
+.shot img.hd{display:none}
+:root[data-theme="dark"] .shot img.hl{display:none}
+:root[data-theme="dark"] .shot img.hd{display:block}
+.shot .cap{font-size:11px;color:var(--muted);padding:8px 12px;border-top:1px solid var(--line);background:var(--surface-2)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
+.faq{margin-top:34px;border-top:1px solid var(--line);padding-top:26px}
+.faq h2{font-size:18px;font-weight:800;letter-spacing:-.02em;margin:0 0 6px}
+.faq .sub{color:var(--muted);font-size:12.5px;margin:0 0 8px}
+.qa{padding:14px 0;border-bottom:1px solid var(--line)}
+.qa:last-child{border-bottom:none}
+.qa .q{font-weight:700;font-size:13.5px;margin:0 0 6px}
+.qa .a{color:var(--muted);font-size:13px;margin:0;line-height:1.65}
+.qa code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:var(--surface-3);padding:1px 5px;border-radius:5px;color:var(--accent-2)}
+.end{margin-top:26px;padding:16px;border-radius:12px;background:var(--surface);border:1px solid var(--line);
+  font-size:12px;color:var(--muted)}
+.fb{margin-top:14px;padding:16px;border-radius:12px;background:var(--surface);border:1px solid var(--line);
+  font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}
+.fb .k{font-weight:750;color:var(--ink)}
+.fb a{color:var(--accent-2);font-weight:600;text-decoration:none;border-bottom:1px solid var(--accent-line)}
+.fb a:hover{border-bottom-color:var(--accent-2)}
+@media(max-width:720px){
+  .step{grid-template-columns:1fr}
+  .two{grid-template-columns:1fr}
+}
+</style>
+<script>
+const I18N={
+ en:{title:'How to use BetterSISSearch',openApp:'Open the app',
+  heroTitle:'Plan your term before you enroll.',
+  faqSub:'Common questions',heroP:'BetterSISSearch is a fast, visual SIS enrollment simulator. Search courses, build a timetable, check time conflicts, then copy the 4-digit class numbers into SIS. No login. Nothing is written to SIS.',
+  step1:'Find and filter courses',
+  s1p1:'Search by course code like MAT 3004, a title, or an instructor.',
+  s1p2:'Filter by subject, level, weekday, time range, and instructor.',
+  cap1:'Left panel: search and filters.',
+  step2:'Pick sections, see conflicts',
+  s2p1:'Click a course to open its sections in the middle panel.',
+  s2p2:'Solid blocks are the sections already in your timetable. Dashed blocks are other sections you can choose.',
+  s2p3:'Overlapping sections turn red. They are not blocked.',
+  cap2:'Middle panel: sections. Right panel: your week.',
+  step3:'Get your class numbers',
+  s3p1:'Click Confirm selection. Copy the 4-digit numbers.',
+  s3p2:'In SIS, open Enrollment, then Enrollment Shopping Cart. Type each number in Enter Class Nbr.',
+  cap3:'One number per section.',
+  capSis:'SIS enrollment cart.',
+  q0:'What are the course code and the class number?',a0:'The <b>course code</b> is three letters plus four digits, like <code>MAT 3004</code>. It is the catalog identifier. The <b>class number</b> is four digits, like <code>1692</code>. It is what you actually enroll with in SIS. You plan with the course code and end up with class numbers. In SIS, a class number locates the course directly, without searching again.',q1:'Can it enroll for me?',a1:'No. The tool is read-only. It never adds to a cart, submits, or changes anything. It gives you the 4-digit class numbers. You paste them into SIS yourself.',q2:'Is the data trustworthy?',a2:'It is a read-only snapshot of SIS Class Search for 2026-27 Term 2: 498 courses and 1574 sections. Seats and courses change during enrollment, so SIS is authoritative. The scrape uses a campus account session and only reads.',q3:'Why no capacity info?',a3:'Capacity changes every second during enrollment. This site is a static deployment, so stored capacity would mislead. No capacity, only time, conflicts, and class numbers.',q4:'Why are some section relationships missing?',a4:'Class Search returns sections without binding relationships. You get numbers, times, rooms, and instructors. You cannot tell which TUT belongs to which LEC. Relationship data is being added. Workaround: locate the course in SIS with its class number to see what it belongs to.',q5:"Why can't I find some courses?",a5:'62 subjects have no courses this term. 24 of them had courses in Term 1, and 38 had none in either term, mostly exchange programs and language codes.',q6:'Why does my combination fail in SIS?',a6:'Prerequisites, year restrictions, time conflicts, full sections, or consent requirements. The tool does not check these. SIS is authoritative.',q7:'Is my selection uploaded?',a7:"No. It stays in your browser's localStorage. No account, no server storage.",q8:'Do conflicts block me?',a8:'No. Red is a warning. Conflicts are allowed. Some people hold a spot and adjust later.',q9:'Which terms are supported?',a9:'Only 2026-27 Term 2.',q10:'Why must the time range fully contain the class?',a10:'You are asking which classes fit in a window when you are free, so the whole class time must fall inside it.',end:'Course data is a static snapshot. Seats and changes are decided by SIS. Your selections stay in this browser.',fbLabel:'Feedback',fbText:'Wrong time, a missing course, or something broken? Email me.'},
+ zh:{title:'使用指南 · BetterSISSearch',openApp:'打开应用',
+  heroTitle:'选课前先把学期排好。',
+  faqSub:'常见问题',heroP:'BetterSISSearch 是一个快速、可视化的 SIS 选课模拟器。搜索课程、搭好课表、检查时间冲突，然后把 4 位 class number 复制到 SIS。不用登录，不写入 SIS。',
+  step1:'搜索和筛选课程',
+  s1p1:'按课程代码搜索，例如 MAT 3004，也可以按标题或教师搜。',
+  s1p2:'按学科、年级、星期、时间段、教师筛选。',
+  cap1:'左侧：搜索和筛选。',
+  step2:'选 section，看冲突',
+  s2p1:'点击课程，中间面板会列出所有 section。',
+  s2p2:'实线块是已经放进课表的，虚线块是其他可选的 section。',
+  s2p3:'时间重叠会标红，但不会阻止你选。',
+  cap2:'中间：section。右侧：你的课表。',
+  step3:'拿到 class number',
+  s3p1:'点确认选课，复制 4 位数字。',
+  s3p2:'在 SIS 里打开 Enrollment，再进 Enrollment Shopping Cart，把数字填进 Enter Class Nbr。',
+  cap3:'每个 section 一个数字。',
+  capSis:'SIS 选课购物车。',
+  q0:'什么是课程编码和 class number？',a0:'<b>课程编码</b>是三字母学科加四位数字，比如 <code>MAT 3004</code>，是课程目录里的编号。<b>class number</b> 是四位数字，比如 <code>1692</code>，是你在 SIS 里实际操作的单位。排课时用课程编码找课，最后拿到的是 class number。在 SIS 里用 class number 可以直接定位课程，不用再 search。',q1:'能帮我选课吗？能替我完成 SIS 操作吗？',a1:'不能。这个工具是只读的，不加购物车、不提交、不改任何东西。它只负责把 4 位 class number 给你，复制到 SIS 里由你自己加。',q2:'数据可信吗？',a2:'数据来自 SIS Class Search 的只读抓取，是 2026-27 Term 2 的快照：498 门课、1574 个 section。选课季名额和课程都会变，最终以 SIS 为准。抓取用的是校园账号登录态，只读查询，不写任何东西。',q3:'为什么不做容量信息？',a3:'容量是动态的，选课季每秒都在变。这是一个静态部署的站点，存下来的容量只会误导人。所以不做容量，只做时间、冲突、class number。',q4:'为什么有些 section 之间的关联关系查不到？',a4:'Class Search 返回的数据里，section 之间没有绑定关系，只有编号、时间、教室、老师。比如一门课的 LEC 和 TUT 该怎么配，数据里看不出来。课程之间的关联数据正在尝试拉取。临时办法：用 class number 在 SIS 里定位，可以看到它所属的课程和 section。',q5:'为什么有些课搜不到？',a5:'62 个科目本学期没开课。其中 24 个在 Term 1 有课，38 个两个学期都没有，多是交换项目和语言代码。',q6:'为什么我选的组合在 SIS 里加不进去？',a6:'可能有先修要求、年级限制、时间冲突、名额已满、需要许可。工具不校验这些，SIS 才是权威。',q7:'我的选课数据会上传吗？',a7:'不会。存在你自己浏览器的 localStorage 里，没有账号、没有服务器存储。',q8:'冲突会被拦下来吗？',a8:'不会。红色只是提示。允许冲突，有人会先占位再调整。',q9:'支持哪些学期？',a9:'目前只有 2026-27 Term 2。',q10:'为什么时间筛选要「完整包含」？',a10:'你实际想问的是「我 9 点到 12 点有空，哪些课能上」，所以课程时段要整段落在你选的窗口里。',end:'课程数据是静态快照，名额和变动以 SIS 为准。你的选课只存在这个浏览器里。',fbLabel:'反馈',fbText:'时间不对、课程缺失、或者哪里坏了，发邮件给我。'}
+};
+(function(){
+  let lang='en';
+  try{ lang=localStorage.getItem('bss.lang')||'en'; }catch(e){}
+  if(lang!=='zh') lang='en';
+  try{ if(localStorage.getItem('bss.theme')==='dark') document.documentElement.dataset.theme='dark'; }catch(e){}
+  document.addEventListener('DOMContentLoaded',function(){
+    const d=I18N[lang]||I18N.en;
+    document.querySelectorAll('[data-i18n]').forEach(el=>{ el.textContent=d[el.dataset.i18n]||el.textContent; });
+    document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const v=d[el.dataset.i18nHtml]; if(v) el.innerHTML=v; });
+    document.title=d.title;
+    document.documentElement.lang=lang==='zh'?'zh-CN':'en';
+  });
+})();
+</script>
+</head>
+<body>
+<header>
+  <div class="logo">B</div>
+  <div class="brand">Better<span class="thin">SIS</span>Search</div>
+  <div class="spacer"></div>
+  <a class="ghost" href="./" data-i18n="openApp">Open the app</a>
+</header>
+
+<div class="page">
+  <div class="hero">
+    <h1 data-i18n="heroTitle">Plan your term before you enroll.</h1>
+    <p data-i18n="heroP">BetterSISSearch is a fast, visual SIS enrollment simulator. Search courses, build a timetable, check time conflicts, then copy the 4-digit class numbers into SIS. No login. Nothing is written to SIS.</p>
+  </div>
+
+  <div class="step">
+    <div class="num">1</div>
+    <div>
+      <h2 data-i18n="step1">Find and filter courses</h2>
+      <p data-i18n="s1p1">Search by course code like MAT 3004, a title, or an instructor.</p>
+      <p data-i18n="s1p2">Filter by subject, level, weekday, time range, and instructor.</p>
+      <div class="shot">
+        <img class="hl" src="assets/fig-find.png" alt="Search and filters">
+        <img class="hd" src="assets/fig-find-dark.png" alt="Search and filters">
+        <div class="cap" data-i18n="cap1">Left panel: search and filters.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <div>
+      <h2 data-i18n="step2">Pick sections, see conflicts</h2>
+      <p data-i18n="s2p1">Click a course to open its sections in the middle panel.</p>
+      <p data-i18n="s2p2">Solid blocks are the sections already in your timetable. Dashed blocks are other sections you can choose.</p>
+      <p data-i18n="s2p3">Overlapping sections turn red. They are not blocked.</p>
+      <div class="shot">
+        <img class="hl" src="assets/fig-sections.png" alt="Sections and conflicts">
+        <img class="hd" src="assets/fig-sections-dark.png" alt="Sections and conflicts">
+        <div class="cap" data-i18n="cap2">Middle panel: sections. Right panel: your week.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">3</div>
+    <div>
+      <h2 data-i18n="step3">Get your class numbers</h2>
+      <p data-i18n="s3p1">Click Confirm selection. Copy the 4-digit numbers.</p>
+      <p data-i18n="s3p2">In SIS, open Enrollment, then Enrollment Shopping Cart. Type each number in Enter Class Nbr.</p>
+      <div class="two">
+        <div class="shot">
+          <img class="hl" src="assets/fig-confirm.png" alt="Class numbers">
+          <img class="hd" src="assets/fig-confirm-dark.png" alt="Class numbers">
+          <div class="cap" data-i18n="cap3">One number per section.</div>
+        </div>
+        <div class="shot"><img src="assets/sis-cart.png" alt="SIS cart"><div class="cap" data-i18n="capSis">SIS enrollment cart.</div></div>
+      </div>
+    </div>
+  </div>
+
+
+  <section class="faq">
+    <h2>Q&amp;A</h2>
+    <p class="sub" data-i18n="faqSub">Common questions</p>
+  <div class="qa"><div class="q" data-i18n-html="q0"></div><div class="a" data-i18n-html="a0"></div></div>
+  <div class="qa"><div class="q" data-i18n-html="q1"></div><div class="a" data-i18n-html="a1"></div></div>
+  <div class="qa"><div class="q" data-i18n-html="q2"></div><div class="a" data-i18n-html="a2"></div></div>
+  <div class="qa"><div class="q" data-i18n-html="q3"></div><div class="a" data-i18n-html="a3"></div></div>
+  <div class="qa"><div class="q" data-i18n-html="q4"></div><div class="a" data-i18n-html="a4"></div></div>
+  <div class="qa"><div class="q" data-i18n-html="q5"></div><div class="a" data-i18n-html="a5"></div></div>
+  <div class="qa"><div class="q" data-i18n-html="q6"></div><div class="a" data-i18n-html="a6"></div></div>
+  <div class="qa"><div class="q" data-i18n-html="q7"></div><div class="a" data-i18n-html="a7"></div></div>
+  <div class="qa"><div class="q" data-i18n-html="q8"></div><div class="a" data-i18n-html="a8"></div></div>
+  <div class="qa"><div class="q" data-i18n-html="q9"></div><div class="a" data-i18n-html="a9"></div></div>
+  <div class="qa"><div class="q" data-i18n-html="q10"></div><div class="a" data-i18n-html="a10"></div></div>
+  </section>
+  <div class="fb">
+    <span class="k" data-i18n="fbLabel">Feedback</span>
+    <span data-i18n="fbText">Wrong time, a missing course, or something broken? Email me.</span>
+    <a href="mailto:125090969@link.cuhk.edu.cn">125090969@link.cuhk.edu.cn</a>
+  </div>
+  <div class="end" data-i18n="end">Course data is a static snapshot. Seats and changes are decided by SIS. Your selections stay in this browser.</div>
+</div>
+</body>
+</html>
