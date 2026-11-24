@@ -100,8 +100,8 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课排表器。查课、排�
 
 | 用户 | 使用场景 | 反馈 | 对应的改进 | 证据 |
 |---|---|---|---|---|
-| U1（高年级同专业同学，2026-11-24） | 18 学分；无早八；留出周二晚足球训练 | 10 分钟排完；同学用 SIS 约 2 小时，卡在时间查重 | 待做：自动组合 / 不冲突 section 推荐、固定时间块 | 作者转述；已获匿名记录同意 |
-| U2（选课期用户，2026-11-24） | 在 SIS 里逐条输入 class number | “全部复制”用不上；实际是复制一个、去 SIS 粘贴、再下一个 | 已做：每行单独复制 + “复制下一个”进度（0/2 → 2/2），全部复制降为备用 | 截图见 `assets/fig-confirm.png`；线上版已更新 |
+| U1（高年级理工科，同专业，2026-11-24） | 完整选课流程：18 学分；无早八；留出周二晚足球训练 | 10 分钟排完；同学用 SIS 约 2 小时，卡在时间查重 | 待做：自动组合 / 不冲突 section 推荐、固定时间块 | 作者转述；已获匿名记录同意 |
+| U2（心理学方向学妹，2026-11-24） | 简单体验后给出流程建议 | class number 只能逐条输入；“全部复制”用不上，实际是复制一个、去 SIS 粘贴、再下一个 | 已做：每行单独复制 + “复制下一个”进度（0/2 → 2/2），全部复制降为备用 | 截图见 `assets/fig-confirm.png`；线上版已更新 |
 
 **根据反馈计划改进**（提交前完成并补到上表）：
 
@@ -202,8 +202,8 @@ No login. Nothing is written to SIS. No course data is modified.
 
 | User | Context | Feedback | Change made | Evidence |
 |---|---|---|---|---|
-| U1 (senior, same major, 2026-11-24) | 18 credits; no 8 a.m.; Tuesday evening football | 10 minutes vs ~2 hours for peers; conflict checking was the blocker | Planned: conflict-free section combinations, fixed personal blocks | Author's summary; consent for anonymised record |
-| U2 (enrolment-period user, 2026-11-24) | Entering class numbers one by one in SIS | “Copy all” is not usable; the real flow is copy one, paste in SIS, then the next | Done: per-row copy button + “Copy next” progress (0/2 → 2/2); copy-all kept as optional | Screenshot: `assets/fig-confirm.png`; live site updated |
+| U1 (senior STEM, same major, 2026-11-24) | Full enrolment flow: 18 credits; no 8 a.m.; Tuesday evening football | 10 minutes vs ~2 hours for peers; conflict checking was the blocker | Planned: conflict-free section combinations, fixed personal blocks | Author's summary; consent for anonymised record |
+| U2 (psychology major, junior, 2026-11-24) | Brief trial, then a workflow suggestion | Class numbers are entered one by one in SIS; “Copy all” is not usable; the real flow is copy one, paste in SIS, then the next | Done: per-row copy button + “Copy next” progress (0/2 → 2/2); copy-all kept as optional | Screenshot: `assets/fig-confirm.png`; live site updated |
 
 **Planned improvements from this feedback** (to be finished and added to the table before submission):
 
