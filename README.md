@@ -23,7 +23,7 @@ An individual entry. It does not represent the organiser or the University.
 
 ### 一句话
 
-BetterSISSearch 是一个面向 CUHK-SZ 学生的选课模拟器。查课、排表、检查冲突，最后给出可以直接在 SIS 里使用的 4 位 class number。
+BetterSISSearch 是一个面向 CUHK-SZ 学生的选课排表器。查课、排表、实时对齐冲突，最后给出可以直接在 SIS 里使用的 4 位 class number。
 
 ### 为谁解决什么问题
 
@@ -124,7 +124,7 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课模拟器。查课、排�
 
 ### One line
 
-BetterSISSearch is a course planning simulator for CUHK-SZ students. Search courses, build a timetable, check conflicts, and get the 4-digit class numbers ready for SIS.
+BetterSISSearch is a course planning simulator for CUHK-SZ students. Search courses, build a timetable, align conflicts in real time, and get the 4-digit class numbers ready for SIS.
 
 ### Who it is for and what it solves
 
