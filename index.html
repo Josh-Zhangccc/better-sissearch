@@ -220,6 +220,14 @@ main{padding:14px;overflow:auto;background:var(--bg)}
 .coderow .c{font-weight:700;font-size:12.5px;flex:1;color:var(--ink)}
 .coderow .s{font-size:11px;color:var(--muted)}
 .coderow .n{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:800;font-size:15px;color:var(--accent-2)}
+.coderow.done{border-color:var(--accent-line);background:var(--accent-soft)}
+.coderow .copy{border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:3px 9px;
+  font-size:11.5px;color:var(--muted);cursor:pointer;flex:0 0 auto}
+.coderow .copy:hover{border-color:var(--accent-line);color:var(--ink)}
+.coderow.done .copy{border-color:var(--accent-line);color:var(--accent-2)}
+.copyProgress{font-size:11.5px;color:var(--muted);margin:0 0 8px}
+.copyAll{display:inline-block;margin-top:2px;font-size:11px;color:var(--muted);text-decoration:underline;
+  text-underline-offset:2px;cursor:pointer}
 .sheet .actions{display:flex;gap:9px}
 .sheet .actions button{flex:1}
 .sheet .attr{border:1px solid var(--line-2);border-radius:10px;background:var(--surface-2);padding:10px 12px;
@@ -347,12 +355,14 @@ body.guide-open header a.ghost{opacity:1;pointer-events:auto}
 <div class="modal" id="confirmModal">
   <div class="sheet">
     <h2 data-i18n="classNumbers">Your class numbers</h2>
-    <p><span data-i18n="pasteHint">Paste these into the SIS enrollment cart. Confirmed for</span> <b id="confYear">—</b>.</p>
+    <p><span data-i18n="pasteHint">Paste each number into the SIS enrollment cart, one at a time. Confirmed for</span> <b id="confYear">—</b>.</p>
+    <div class="copyProgress" id="copyProgress"></div>
     <div class="codes" id="codes"></div>
     <div class="actions">
       <button class="ghost" id="closeConfirm" data-i18n="back">Back</button>
-      <button class="primary" id="copyCodes" data-i18n="copyAll">Copy all</button>
+      <button class="primary" id="copyNext" data-i18n="copyNext">Copy next</button>
     </div>
+    <a class="copyAll" id="copyCodes" data-i18n="copyAllNote">Copy all (optional)</a>
     <div class="copyNote" data-i18n="assocNote">For courses with LEC and TUT, SIS checks whether the combination is valid.</div>
     <div class="copyNote" data-i18n="snapshot">Course data is a static snapshot. Final availability is decided by SIS.</div>
   </div>
@@ -391,8 +401,8 @@ const I18N={
   pickOne:'Pick one section per type. Each one drops into your timetable.',
   conflictsAllowed:'Conflicts are allowed. Clashing blocks are marked red.',
   notSelected:'not selected',picked:'picked',noMatch:'No matching courses',
-  classNumbers:'Your class numbers',pasteHint:'Paste these into the SIS enrollment cart. Confirmed for',
-  back:'Back',copyAll:'Copy all',copied:'Copied ✓',
+  classNumbers:'Your class numbers',pasteHint:'Paste each number into the SIS enrollment cart, one at a time. Confirmed for',
+  back:'Back',copyAll:'Copy all',copyNext:'Copy next',copy:'Copy',done:'Done',copyAllNote:'Copy all (optional)',copied:'Copied ✓',
   snapshot:'Course data is a static snapshot. Final availability is decided by SIS.',assocNote:'For courses with LEC and TUT, SIS checks whether the combination is valid.',
   yearQ:'What is your year of study?',yearHint:'Asked once, so you never have to pick it again in the SIS course search.',
   y1:'Year 1',y2:'Year 2',y3:'Year 3',y4:'Year 4',postgrad:'Postgraduate',
@@ -409,8 +419,8 @@ const I18N={
   pickOne:'每种类型选一个 section，会直接进入课表。',
   conflictsAllowed:'允许冲突，重叠的时间块会标红。',
   notSelected:'未选',picked:'已选',noMatch:'没有匹配的课程',
-  classNumbers:'你的 class number',pasteHint:'粘贴到 SIS 选课购物车。年级：',
-  back:'返回',copyAll:'全部复制',copied:'已复制 ✓',
+  classNumbers:'你的 class number',pasteHint:'逐个粘贴到 SIS 选课购物车。年级：',
+  back:'返回',copyAll:'全部复制',copyNext:'复制下一个',copy:'复制',done:'完成',copyAllNote:'全部复制（备用）',copied:'已复制 ✓',
   snapshot:'课程数据为静态快照，最终以 SIS 为准。',assocNote:'含 LEC 和 TUT 的课程，组合是否有效以 SIS 校验为准。',
   yearQ:'你的年级？',yearHint:'只需选择一次，之后不用在 SIS 里重复选。',
   y1:'大一',y2:'大二',y3:'大三',y4:'大四',postgrad:'研究生',
@@ -725,26 +735,51 @@ document.querySelector('aside.mid').addEventListener('click', e=>{
 function renderAll(){renderPinned();renderList();renderDetail();renderGrid();$('#confirmBtn').disabled=!selected.length;}
 
 /* ---------------- confirm ---------------- */
+let codeRows=[];
+async function copyText(text){
+  try{await navigator.clipboard.writeText(text);}
+  catch{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
+}
+function updateCopyProgress(){
+  const done=codeRows.filter(r=>r.done).length;
+  const p=$('#copyProgress'); if(p) p.textContent=done+' / '+codeRows.length;
+  const b=$('#copyNext'); if(b) b.textContent=done===codeRows.length?t('done'):t('copyNext');
+}
+async function copyOneRow(r){
+  if(!r||r.done) return;
+  await copyText(r.cn);
+  r.done=true; r.el.classList.add('done'); r.btn.textContent='✓ '+r.cn;
+  updateCopyProgress();
+}
 $('#confirmBtn').onclick=()=>{
   $('#confYear').textContent=year||'—';
-  const box=$('#codes'); box.innerHTML='';
+  const box=$('#codes'); box.innerHTML=''; codeRows=[];
   for(const p of selected){
     const c=course(p.code);
     for(const x of pickedSections(p.code)){
       const d=el('div','coderow');
       d.innerHTML=`<span class="c">${c?c.code:p.code}</span><span class="s">${x.section.section+' '+x.type}</span><span class="n">${x.classNumber}</span>`;
+      const btn=el('button','copy',t('copy'));
+      btn.onclick=()=>{ const r=codeRows.find(y=>y.cn===x.classNumber); copyOneRow(r); };
+      d.appendChild(btn);
       box.appendChild(d);
+      codeRows.push({cn:x.classNumber,el:d,btn,done:false});
     }
   }
+  updateCopyProgress();
   $('#confirmModal').classList.add('show');
   confirmed=true; renderGrid();
 };
 $('#closeConfirm').onclick=()=>{$('#confirmModal').classList.remove('show');confirmed=false;renderGrid();};
+$('#copyNext').onclick=async()=>{
+  const r=codeRows.find(x=>!x.done);
+  if(r){ await copyOneRow(r); }
+  else { $('#confirmModal').classList.remove('show'); confirmed=false; renderGrid(); }
+};
 $('#copyCodes').onclick=async()=>{
-  const text=selected.flatMap(p=>pickedSections(p.code).map(x=>x.classNumber)).join('\n');
-  try{await navigator.clipboard.writeText(text);}
-  catch{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
-  const b=$('#copyCodes');b.textContent=t('copied');setTimeout(()=>b.textContent=t('copyAll'),1200);
+  const text=codeRows.map(r=>r.cn).join('\n');
+  await copyText(text);
+  const a=$('#copyCodes'); a.textContent=t('copied'); setTimeout(()=>a.textContent=t('copyAllNote'),1400);
 };
 
 /* ---------------- year ---------------- */

@@ -65,7 +65,7 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课排表器。查课、排�
 2. 左侧搜索：课程编码、课名、教师。筛选：学科、层级、星期、时段、教师。
 3. 点击课程，查看它的 section。实线是已排入课表的 section，虚线是其他可选 section。时间重叠会标红。
 4. 在重叠区域重复点击，可以在几个冲突 section 之间循环切换。点击空白处取消选中。
-5. 确认选择，复制 4 位 class number。在 SIS 的 Enrollment Shopping Cart 里逐个输入 Enter Class Nbr。
+5. 确认选择。每个 class number 都能单独复制，按 SIS 的顺序逐个粘贴到 Enrollment Shopping Cart 的 Enter Class Nbr。
 6. 教程（含截图）：`tutorial.html`
 
 无需登录。不写 SIS。不修改任何课程数据。
@@ -101,10 +101,11 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课排表器。查课、排�
 | 用户 | 使用场景 | 反馈 | 对应的改进 | 证据 |
 |---|---|---|---|---|
 | U1（高年级同专业同学，2026-11-24） | 18 学分；无早八；留出周二晚足球训练 | 10 分钟排完；同学用 SIS 约 2 小时，卡在时间查重 | 待做：自动组合 / 不冲突 section 推荐、固定时间块 | 作者转述；已获匿名记录同意 |
-| U2（待补） | | | | |
+| U2（选课期用户，2026-11-24） | 在 SIS 里逐条输入 class number | “全部复制”用不上；实际是复制一个、去 SIS 粘贴、再下一个 | 已做：每行单独复制 + “复制下一个”进度（0/2 → 2/2），全部复制降为备用 | 截图见 `assets/fig-confirm.png`；线上版已更新 |
 
 **根据反馈计划改进**（提交前完成并补到上表）：
 
+- ✅ 逐条复制 class number：每行独立复制 + “复制下一个”进度，全部复制降为备用（已完成，见 U2）；
 - 自动找“不冲突的 section 组合”，可选“不要早八”；
 - 支持个人固定安排（如周二晚足球训练），参与冲突判断；
 - 显示空闲时段，方便“找时间加课”。
@@ -166,7 +167,7 @@ A senior classmate's test: with the courses already known, **10 minutes** to bui
 2. Search on the left: course code, title, instructor. Filter by subject, level, weekday, time and instructor.
 3. Click a course to see its sections. Solid blocks are scheduled sections. Dashed blocks are alternatives. Overlaps turn red.
 4. Click an overlapping area again to cycle through conflicting sections. Click empty space to clear the selection.
-5. Confirm, copy the 4-digit class numbers, and enter them one by one in the SIS Enrollment Shopping Cart (Enter Class Nbr).
+5. Confirm. Copy each class number separately, then enter them one by one in the SIS Enrollment Shopping Cart (Enter Class Nbr).
 6. Tutorial with screenshots: `tutorial.html`
 
 No login. Nothing is written to SIS. No course data is modified.
@@ -202,10 +203,11 @@ No login. Nothing is written to SIS. No course data is modified.
 | User | Context | Feedback | Change made | Evidence |
 |---|---|---|---|---|
 | U1 (senior, same major, 2026-11-24) | 18 credits; no 8 a.m.; Tuesday evening football | 10 minutes vs ~2 hours for peers; conflict checking was the blocker | Planned: conflict-free section combinations, fixed personal blocks | Author's summary; consent for anonymised record |
-| U2 (pending) | | | | |
+| U2 (enrolment-period user, 2026-11-24) | Entering class numbers one by one in SIS | “Copy all” is not usable; the real flow is copy one, paste in SIS, then the next | Done: per-row copy button + “Copy next” progress (0/2 → 2/2); copy-all kept as optional | Screenshot: `assets/fig-confirm.png`; live site updated |
 
 **Planned improvements from this feedback** (to be finished and added to the table before submission):
 
+- ✅ One-by-one class number copying: per-row copy button + “Copy next” progress; copy-all kept as optional (done, see U2);
 - Find conflict-free section combinations automatically, with a “no 8 a.m.” option;
 - Support fixed personal blocks (e.g. Tuesday evening football) in conflict checking;
 - Show free slots, to make it easy to find time for extra courses.
