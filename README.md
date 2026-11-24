@@ -13,7 +13,8 @@
 个人参赛作品，不代表主办单位或学校的官方立场。
 An individual entry. It does not represent the organiser or the University.
 
-在线体验 / Live demo: 待公开部署后填写（报名与提交入口见大赛通知）
+在线体验 / Live demo: https://josh-zhangccc.github.io/better-sissearch/
+源码 / Source: https://github.com/Josh-Zhangccc/better-sissearch
 反馈邮箱 / Contact: 125090969@link.cuhk.edu.cn
 
 ---
