@@ -1,0 +1,108 @@
+{
+  "course": "AIE 1904",
+  "title": "AI Exploration IV",
+  "term": "2026-27 Term 2",
+  "source": "https://sai.cuhk.edu.cn/zh-hans/aie1904-spring2027",
+  "source_en": "https://sai.cuhk.edu.cn/en/aie1904-spring2027",
+  "api": "https://sai.cuhk.edu.cn/zh-hans/api/aie-list?category=216",
+  "fetched_at": "2026-11-27",
+  "note": "SIS Class Search lists all eight AIE 1904 sections with instructor 'Staff'. The SAI course page publishes the actual 2027-spring time and lecturer for each section; times follow the published 2-hour blocks (SIS renders the same slots ending at :20). Rooms below are the SIS display names; sai_address is verbatim from the SAI feed.",
+  "sections": [
+    {
+      "section": "S01",
+      "topic": "人工智能与医疗健康应用",
+      "instructor": "冯天天",
+      "day": "Tu",
+      "start": "08:30",
+      "end": "10:30",
+      "sai_week": "周二",
+      "sai_time": "8:30-10:30；周二",
+      "sai_address": "TC_301",
+      "room": "Teaching C Bldg 301"
+    },
+    {
+      "section": "S02",
+      "topic": "具身人工智能探索",
+      "instructor": "胡君杰",
+      "day": "Fr",
+      "start": "10:30",
+      "end": "12:30",
+      "sai_week": "周五",
+      "sai_time": "10:30-12:30；周五",
+      "sai_address": "Lecture TC_204; Lab TC_301",
+      "room": "Teaching C Bldg 204"
+    },
+    {
+      "section": "S03",
+      "topic": "构建智能多说话人会议转录系统",
+      "instructor": "李明 (A)",
+      "day": "Tu",
+      "start": "08:30",
+      "end": "10:30",
+      "sai_week": "周二",
+      "sai_time": "8:30-10:30；周二",
+      "sai_address": "TA_314",
+      "room": "Teaching A Bldg 314"
+    },
+    {
+      "section": "S04",
+      "topic": "面向具身人工智能的大语言模型系统",
+      "instructor": "凌内文",
+      "day": "We",
+      "start": "13:30",
+      "end": "15:30",
+      "sai_week": "周三",
+      "sai_time": "13:30-15:30；周三",
+      "sai_address": "TA_314",
+      "room": "Teaching A Bldg 314"
+    },
+    {
+      "section": "S05",
+      "topic": "医学影像人工智能分析 II",
+      "instructor": "刘慧",
+      "day": "Th",
+      "start": "08:30",
+      "end": "10:30",
+      "sai_week": "周四",
+      "sai_time": "8:30-10:30；周四",
+      "sai_address": "TA_314",
+      "room": "Teaching A Bldg 314"
+    },
+    {
+      "section": "S06",
+      "topic": "免疫学中的人工智能：实践入门",
+      "instructor": "杨杨",
+      "day": "Fr",
+      "start": "08:30",
+      "end": "10:30",
+      "sai_week": "周五",
+      "sai_time": "8:30-10:30；周五",
+      "sai_address": "TA_314",
+      "room": "Teaching A Bldg 314"
+    },
+    {
+      "section": "S07",
+      "topic": "教会AI模型采取行动：数据、训练与评估",
+      "instructor": "曾幸山",
+      "day": "We",
+      "start": "15:30",
+      "end": "17:30",
+      "sai_week": "周三",
+      "sai_time": "15:30-17:30；周三",
+      "sai_address": "TA_314",
+      "room": "Teaching A Bldg 314"
+    },
+    {
+      "section": "S08",
+      "topic": "香港中文大学（深圳）世界模型探索",
+      "instructor": "朱熹",
+      "day": "Fr",
+      "start": "10:30",
+      "end": "12:30",
+      "sai_week": "周五",
+      "sai_time": "10:30-12:30；周五",
+      "sai_address": "TA_313",
+      "room": "Teaching A Bldg 313"
+    }
+  ]
+}

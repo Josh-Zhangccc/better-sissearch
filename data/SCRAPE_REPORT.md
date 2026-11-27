@@ -153,3 +153,27 @@ cd /home/april/repo/projects/better-sissearch
 ## 8. 失败清单
 
 无。10 个超限 subject 全部分桶成功，`failures=[]`、`unreachable=[]`。
+
+## 9. SAI 补充：AIE 1904（2026-11-27）
+
+SIS 快照里 AIE 1904（AI Exploration IV）的 8 个 section 教师全部是 `Staff`，查不到「谁教、哪个主题」。人工智能学院（SAI）官网的课程页公布了 2027 年春季各 section 的具体安排：
+
+- **来源**：<https://sai.cuhk.edu.cn/zh-hans/aie1904-spring2027>（页面数据由其自带接口 `/zh-hans/api/aie-list?category=216` 提供）
+- **抓取日**：2026-11-27
+- **落盘**：`data/sai_aie1904_spring2027.json`（SAI 原文 + section 解析字段），由 `apply_sai.py` 叠加进 `data/courses.json`
+- **核对**：8 个 section 标签 S01–S08 一一对应；SAI 的教室代码（TC_301 / TC_204 / TA_314 / TA_313）与 SIS 同标签 section 的教室全部一致，可确认映射没有错位
+
+| section | 主题 | 教师 | 时间 | 教室（SIS 名） | SAI 地址码 |
+|---|---|---|---|---|---|
+| S01 | 人工智能与医疗健康应用 | 冯天天 | 周二 08:30–10:30 | Teaching C Bldg 301 | TC_301 |
+| S02 | 具身人工智能探索 | 胡君杰 | 周五 10:30–12:30 | Teaching C Bldg 204 | Lecture TC_204; Lab TC_301 |
+| S03 | 构建智能多说话人会议转录系统 | 李明 (A) | 周二 08:30–10:30 | Teaching A Bldg 314 | TA_314 |
+| S04 | 面向具身人工智能的大语言模型系统 | 凌内文 | 周三 13:30–15:30 | Teaching A Bldg 314 | TA_314 |
+| S05 | 医学影像人工智能分析 II | 刘慧 | 周四 08:30–10:30 | Teaching A Bldg 314 | TA_314 |
+| S06 | 免疫学中的人工智能：实践入门 | 杨杨 | 周五 08:30–10:30 | Teaching A Bldg 314 | TA_314 |
+| S07 | 教会 AI 模型采取行动：数据、训练与评估 | 曾幸山 | 周三 15:30–17:30 | Teaching A Bldg 314 | TA_314 |
+| S08 | 香港中文大学（深圳）世界模型探索 | 朱熹 | 周五 10:30–12:30 | Teaching A Bldg 313 | TA_313 |
+
+时间口径：SAI 按 2 小时整块公布（如 08:30–10:30），SIS 课表格位把同一时段渲染到 `:20`（08:30–10:20）。站点以 SAI 公布时间为准，冲突判断因此按完整 2 小时块计。
+
+复现：`python apply_sai.py`（幂等；`--dry-run` 只看变更）。**重跑 `scrape_full.py` 后必须再跑一次**，否则教师会回到 `Staff`。

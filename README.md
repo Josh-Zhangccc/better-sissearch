@@ -74,6 +74,7 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课排表器。查课、排�
 
 - 数据源：SIS Class Search，2026-27 Term 2（strm 2620）公开课表快照。
 - 抓取日：2026-11-23。498 门课，1574 个 section，覆盖 53 个 subject。
+- 补充：AIE1904（AI Exploration IV）在 SIS 中教师显示为 `Staff`；8 个 section 的授课时间与教师于 2026-11-27 取自 SAI 人工智能学院官方课程页（`apply_sai.py` + `data/sai_aie1904_spring2027.json`）。
 - 快照只包含抓取时 open 的班级。容量、名额、课程变动以 SIS 为准。
 - 运行时不需要 SIS，也不需要登录。全部数据随站点静态分发。
 - 已知局限：不提供容量信息；一节 lec 与多节 tut 的绑定关系不完整，可以先用 tut 的 class number 在 SIS 里反查 lec。
@@ -176,6 +177,7 @@ No login. Nothing is written to SIS. No course data is modified.
 
 - Source: SIS Class Search, 2026-27 Term 2 (strm 2620), a public schedule snapshot.
 - Scraped on 2026-11-23. 498 courses, 1574 sections, 53 subjects.
+- Supplement: SIS lists AIE1904 (AI Exploration IV) with instructor `Staff`; the eight sections' times and lecturers were added on 2026-11-27 from the SAI official course page (`apply_sai.py` + `data/sai_aie1904_spring2027.json`).
 - The snapshot includes open classes only. Seats and live changes remain authoritative in SIS.
 - Static data. No SIS access at runtime, no login.
 - Known limits: no seat capacity; lecture/tutorial bindings are incomplete. Use a tutorial class number in SIS to find its lecture.
