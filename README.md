@@ -14,7 +14,8 @@
 An individual entry. It does not represent the organiser or the University.
 
 在线体验 / Live demo: https://josh-zhangccc.github.io/better-sissearch/
-源码 / Source: https://github.com/Josh-Zhangccc/better-sissearch
+源码 / Source: https://github.com/Josh-Zhangccc/better-sissearch-source
+部署 / Deployment: https://github.com/Josh-Zhangccc/better-sissearch
 反馈邮箱 / Contact: 125090969@link.cuhk.edu.cn
 
 ---
