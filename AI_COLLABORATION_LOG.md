@@ -201,3 +201,13 @@
 6. **公开部署（11-24）**：GitHub Pages 上线，站点 `https://josh-zhangccc.github.io/better-sissearch/`，源码 `https://github.com/Josh-Zhangccc/better-sissearch`；发布包只含站点与文档（排除 `logs/`、`.salt`、抓取脚本），已实测 498 门课加载、教程与图片可访问。
 
 7. **反馈驱动的改进（11-24）**：按用户反馈把 class number 的“全部复制”改成**逐条复制**——每行一个复制按钮，主按钮“复制下一个”带进度（0/2 → 2/2），全部复制降为备用；教程第 3 步和 README 用法同步更新。
+
+---
+
+## 八、11-27 / 11-28 补记：学院专属课程数据补充与参赛前检查
+
+1. **反馈触发**：有反馈指出，有些课程是学院专属的（如人工智能学院的 AIE 探索课），SIS Class Search 里教师一律显示 `Staff`，看不出谁教、上哪个主题。
+2. **11-27 同步 AIE1904**：从 SAI 人工智能学院官网课程页（`aie1904-spring2027`，数据来自页面自带接口 `api/aie-list?category=216`）取回 8 个 section 的时间、教师与主题；以 `data/sai_aie1904_spring2027.json` 落盘，`apply_sai.py` 叠加进 `data/courses.json`。核对方式：SAI 的教室代码（TC_301 / TC_204 / TA_314 / TA_313）与 SIS 同标签 section 的教室全部一致，确认 S01–S08 映射没有错位。
+3. **11-28 补齐 AIE1902**：参赛前复查发现同类的 AIE1902 也仍是 `Staff`，而 SAI 同样公布了课程页（11 个 section，`category=217`）；按同一流程补齐。`apply_sai.py` 改为自动遍历 `data/sai_aie*_spring2027.json`，幂等、可重放（`--dry-run` 只看变更）。
+4. **文档同步**：README 数据节与已知局限、`data/SCRAPE_REPORT.md` §9（两张 section 明细表）、页面「关于」弹窗、教程 Q&A 都注明这两门课的时间/教师来源与时间口径（SAI 按 2 小时整块公布到 `:30`，SIS 课表格位渲染到 `:20`）。
+5. **参赛前检查（11-28）**：公网站点、教程、GitHub 仓库均返回 200；发布包不含 `logs/`、`.salt`、抓取脚本与任何凭据；署名在 README 文首与「关于」弹窗；AI 协作日志 8 节；README 的 498 门课 / 1574 个 section 与线上数据一致；全程只读 SIS，不选课、不写任何教务数据。

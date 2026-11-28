@@ -154,14 +154,32 @@ cd /home/april/repo/projects/better-sissearch
 
 无。10 个超限 subject 全部分桶成功，`failures=[]`、`unreachable=[]`。
 
-## 9. SAI 补充：AIE 1904（2026-11-27）
+## 9. SAI 补充：AIE 1902 / AIE 1904（2026-11-27 起）
 
-SIS 快照里 AIE 1904（AI Exploration IV）的 8 个 section 教师全部是 `Staff`，查不到「谁教、哪个主题」。人工智能学院（SAI）官网的课程页公布了 2027 年春季各 section 的具体安排：
+SIS 快照里 AIE 1902（AI Exploration II）与 AIE 1904（AI Exploration IV）两门**学院专属探索课**的 section 教师全部是 `Staff`，查不到「谁教、哪个主题」。人工智能学院（SAI）官网的课程页公布了 2027 年春季各 section 的具体安排：
 
-- **来源**：<https://sai.cuhk.edu.cn/zh-hans/aie1904-spring2027>（页面数据由其自带接口 `/zh-hans/api/aie-list?category=216` 提供）
-- **抓取日**：2026-11-27
-- **落盘**：`data/sai_aie1904_spring2027.json`（SAI 原文 + section 解析字段），由 `apply_sai.py` 叠加进 `data/courses.json`
-- **核对**：8 个 section 标签 S01–S08 一一对应；SAI 的教室代码（TC_301 / TC_204 / TA_314 / TA_313）与 SIS 同标签 section 的教室全部一致，可确认映射没有错位
+- **来源**：<https://sai.cuhk.edu.cn/zh-hans/aie1902-spring2027>、<https://sai.cuhk.edu.cn/zh-hans/aie1904-spring2027>（页面数据由其自带接口 `/zh-hans/api/aie-list?category=217` / `=216` 提供）
+- **抓取日**：2026-11-27（1904）、2026-11-28（1902）
+- **落盘**：`data/sai_aie1902_spring2027.json`、`data/sai_aie1904_spring2027.json`（SAI 原文 + section 解析字段），由 `apply_sai.py` 叠加进 `data/courses.json`
+- **核对**：两门课共 19 个 section 标签 S01–S11 / S01–S08 一一对应；SAI 的教室代码与 SIS 同标签 section 的教室全部一致（1902 的 S07 官网写「授课 TC_311；实验 TC_301」，SIS 记为 TC_301，站点保留 SIS 教室名），可确认映射没有错位
+
+### AIE 1902（11 sections）
+
+| section | 主题 | 教师 | 时间 | 教室（SIS 名） | SAI 地址码 |
+|---|---|---|---|---|---|
+| S01 | 大语言模型在心理学与心理健康支持中的应用 | 高梦霞 | 周四 15:30–17:30 | Teaching C Bldg 203 | TC_203 |
+| S02 | 打造你的第一台 AI 桌面机器人 | 黄旭 | 周二 08:30–10:30 | Teaching Complex C501 | TxC501 |
+| S03 | 借助 AI 探索语言模型 | 李肖鹏 | 周一 08:30–10:30 | Teaching Complex C501 | TxC501 |
+| S04 | AI 医学影像助手：从病灶识别到报告撰写 | 刘新宇 | 周三 08:30–10:30 | Teaching D Bldg 202 | TD_202 |
+| S05 | 人工智能在癌症领域的应用 II | 刘慧 | 周二 08:30–10:30 | Teaching D Bldg 303 | TD_303 |
+| S06 | AI 辅助基因组数据分析 | 马文静 | 周五 08:30–10:30 | Teaching A Bldg 313 | TA_313 |
+| S07 | 面向具身人工智能的多模态视频理解与人体动作感知 | 彭鲲宇 | 周二 10:30–12:30 | Teaching C Bldg 301 | 授课：TC_311；实验：TC_301 |
+| S08 | 多智能体 AI 系统的应用 | George POLYZOS | 周三 13:30–15:30 | Teaching C Bldg 112 | TC_112 |
+| S09 | 面向决策的现代人工智能 | 李宇超 | 周二 10:30–12:30 | Teaching A Bldg 314 | TA_314 |
+| S10 | AI 生成视频检测：从 AIGC 基础到检测智能体 | 赵望博 | 周二 15:30–17:30 | Teaching D Bldg 211 | TD_211 |
+| S11 | AI 决策实验室：打造你的专属智能助手 | 吴澜 | 周五 08:30–10:30 | Teaching C Bldg 109 | TC_109 |
+
+### AIE 1904（8 sections）
 
 | section | 主题 | 教师 | 时间 | 教室（SIS 名） | SAI 地址码 |
 |---|---|---|---|---|---|
@@ -176,4 +194,6 @@ SIS 快照里 AIE 1904（AI Exploration IV）的 8 个 section 教师全部是 `
 
 时间口径：SAI 按 2 小时整块公布（如 08:30–10:30），SIS 课表格位把同一时段渲染到 `:20`（08:30–10:20）。站点以 SAI 公布时间为准，冲突判断因此按完整 2 小时块计。
 
-复现：`python apply_sai.py`（幂等；`--dry-run` 只看变更）。**重跑 `scrape_full.py` 后必须再跑一次**，否则教师会回到 `Staff`。
+复现：`python apply_sai.py`（幂等；`--dry-run` 只看变更，自动遍历 `data/sai_aie*_spring2027.json`）。**重跑 `scrape_full.py` 后必须再跑一次**，否则这两门课的教师会回到 `Staff`。
+
+说明：其余 496 门课在 SIS 里本来就显示 `Staff`（教务尚未公布授课教师），站点如实保留，不做猜测；两门学院的探索课因为官网已公布，才做此补充。
