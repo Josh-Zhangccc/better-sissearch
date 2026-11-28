@@ -87,7 +87,14 @@ button{font-family:inherit}
 .primary:disabled{background:var(--surface-3);color:var(--muted);cursor:default;box-shadow:none}
 
 /* ---------- layout ---------- */
-.layout{display:grid;grid-template-columns:344px 384px 1fr;height:calc(100vh - 55px)}
+.layout{display:grid;grid-template-columns:344px 384px 1fr;height:calc(100vh - 82px)}
+
+/* ---------- attribution footer (competition requirement) ---------- */
+.attrib{height:26px;display:flex;align-items:center;justify-content:center;gap:12px;padding:0 12px;
+  background:var(--surface);border-top:1px solid var(--line);font-size:10.5px;color:var(--muted);
+  white-space:nowrap;overflow:hidden}
+.attrib span{overflow:hidden;text-overflow:ellipsis}
+.attrib .sep{opacity:.55}
 aside.left{border-right:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;min-height:0}
 aside.mid{border-right:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;min-height:0}
 main{padding:14px;overflow:auto;background:var(--bg)}
@@ -258,6 +265,9 @@ body.guide-open header a.ghost{opacity:1;pointer-events:auto}
   header .ghost{padding:5px 9px;font-size:11.5px}
   header .primary{padding:7px 11px;font-size:11.5px}
   .layout{display:block;height:auto}
+  .attrib{height:auto;min-height:26px;white-space:normal;text-align:center;padding:6px 10px;
+    flex-direction:column;gap:2px;font-size:10px}
+  .attrib .sep{display:none}
   aside.left,aside.mid{width:auto;border-right:none;border-bottom:1px solid var(--line)}
   aside.left{height:auto}
   #pinnedList{max-height:none}
@@ -325,6 +335,12 @@ body.guide-open header a.ghost{opacity:1;pointer-events:auto}
     <div class="grid" id="grid"></div>
   </main>
 </div>
+
+<footer class="attrib" aria-label="Competition attribution">
+  <span>2026 AI Vibe Coding 大赛 · 主办单位｜香港中文大学（深圳）人文社科学院跨文化交流学科部</span>
+  <span class="sep">·</span>
+  <span>2026 AI Vibe Coding Competition · Presented by the Division of Intercultural Communication, School of Humanities and Social Science, CUHK-Shenzhen</span>
+</footer>
 
 <!-- guide hint modal (first visit) -->
 <div class="modal" id="guideModal">

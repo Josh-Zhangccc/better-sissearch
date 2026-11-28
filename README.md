@@ -140,7 +140,7 @@ One point is easy to miss. A **course code** (three letters plus four digits, e.
 
 ### Why it is faster: two workflows
 
-![Traditional flow vs BetterSISSearch](assets/flow-compare.png)
+![Traditional flow vs BetterSISSearch](assets/en/flow-compare-en.png)
 
 Same goal (example: MAT 1002, L01 LEC + T01 TUT), two paths:
 
@@ -158,9 +158,9 @@ A senior classmate's test: with the courses already known, **10 minutes** to bui
 
 ![SIS: 50 sections and a successful add](assets/sis-added.png)
 
-![BetterSISSearch planning view](assets/bettersis-plan.png)
+![BetterSISSearch planning view](assets/en/bettersis-plan-en.png)
 
-![Class numbers after confirmation](assets/bettersis-classnumbers.png)
+![Class numbers after confirmation](assets/en/bettersis-classnumbers-en.png)
 
 ### How to use
 
@@ -227,8 +227,8 @@ Notes: feedback comes from real use during this term's enrolment period. User id
 
 ### 统一署名 / Required attribution
 
-署名位置：本 README 文首；作品页面右上角「关于 / About」弹窗（含数据快照日期与联系方式）。
-Attribution locations: the top of this README, and the About dialog in the app (with data snapshot date and contact).
+署名位置：本 README 文首；作品页面**页脚**（每页可见）与右上角「关于 / About」弹窗（含数据快照日期与联系方式）。
+Attribution locations: the top of this README; the page footer (always visible) and the About dialog in the app (with data snapshot date and contact).
 
 2026 AI Vibe Coding 大赛
 主办单位｜香港中文大学（深圳）人文社科学院跨文化交流学科部
