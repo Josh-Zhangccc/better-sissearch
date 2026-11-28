@@ -140,6 +140,22 @@ main{padding:14px;overflow:auto;background:var(--bg)}
 .pcard .meta b{color:var(--accent-2);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .pcard.empty{color:var(--muted);border-style:dashed;border-left-color:var(--line-2);text-align:center;font-size:11.5px;padding:13px;cursor:default;background:transparent}
 
+/* ---------- fixed blocks ---------- */
+.selectedHead .mini{margin-left:auto;border:1px solid var(--line-2);background:var(--surface);color:var(--accent-2);
+  border-radius:7px;padding:2px 8px;font-size:10px;font-weight:700;cursor:pointer}
+.selectedHead .mini:hover{border-color:var(--accent-line)}
+.selectedHead .mini:disabled{color:var(--muted);cursor:default;opacity:.55}
+#blocksList{overflow:auto;max-height:20vh;padding:2px 14px 8px;border-bottom:1px solid var(--line);
+  display:flex;flex-direction:column;gap:5px}
+.bcard{border:1px solid var(--line-2);border-left:3px solid var(--caramel);border-radius:10px;
+  padding:6px 9px;background:var(--surface-2)}
+.bcard .r1{display:flex;align-items:center;gap:6px}
+.bcard .code{font-weight:700;font-size:12px;flex:1;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bcard .remove{border:1px solid var(--line-2);background:var(--surface);color:var(--muted);border-radius:7px;
+  padding:2px 9px;font-size:10.5px;cursor:pointer;line-height:1.4}
+.bcard .remove:hover{border-color:var(--danger);color:var(--danger)}
+.bcard .meta{font-size:10.5px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.block.type-FIX{border:1.5px dashed var(--caramel);background:rgba(180,83,9,.1);color:var(--caramel);z-index:5}
 /* ---------- course list ---------- */
 .listHead{display:flex;justify-content:space-between;padding:9px 14px 5px;font-size:10.5px;font-weight:700;
   text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
@@ -209,6 +225,18 @@ main{padding:14px;overflow:auto;background:var(--bg)}
   line-height:1.15;padding:0 3px;border-radius:5px;background:rgba(240,116,116,.22);color:var(--danger)}
 
 /* ---------- modals ---------- */
+.formrow{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+.formrow label{width:72px;font-size:11.5px;color:var(--muted);flex:none}
+.formrow input,.formrow select{flex:1;padding:7px 9px;border:1px solid var(--line-2);border-radius:8px;
+  background:var(--surface-2);color:var(--ink);font-size:12.5px;font-family:inherit}
+.checkrow{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink);margin:2px 0 12px;cursor:pointer}
+.checkrow input{accent-color:var(--accent);width:14px;height:14px}
+#toast{position:fixed;left:50%;bottom:44px;transform:translateX(-50%);background:var(--ink);color:var(--bg);
+  padding:9px 14px;border-radius:10px;font-size:12px;display:none;gap:12px;align-items:center;z-index:80;
+  box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:92vw}
+#toast.show{display:flex}
+#toast button{border:1px solid currentColor;background:transparent;color:inherit;border-radius:7px;
+  padding:2px 8px;font-size:11px;cursor:pointer;flex:none}
 .modal{position:fixed;inset:0;background:rgba(6,7,10,.62);backdrop-filter:blur(3px);display:none;
   align-items:center;justify-content:center;z-index:50;padding:20px}
 .modal.show{display:flex}
@@ -318,8 +346,11 @@ body.guide-open header a.ghost{opacity:1;pointer-events:auto}
     <div class="panel" id="panel-time"></div>
     <div class="panel" id="panel-instructor"></div>
 
-    <div class="selectedHead"><span class="t" data-i18n="pinned">Pinned</span><span class="n" id="selCount">0</span></div>
+    <div class="selectedHead"><span class="t" data-i18n="pinned">Pinned</span><span class="n" id="selCount">0</span><button class="mini" id="autoBtn" data-i18n="autoCombine">Auto-combine</button></div>
     <div id="pinnedList"></div>
+
+    <div class="selectedHead"><span class="t" data-i18n="myBlocks">My fixed blocks</span><button class="mini" id="addBlockBtn" data-i18n="addBlock">+ Add</button></div>
+    <div id="blocksList"></div>
 
     <div class="listHead"><span data-i18n="courses">Courses</span><span id="listCount"></span></div>
     <div id="results"></div>
@@ -404,6 +435,35 @@ body.guide-open header a.ghost{opacity:1;pointer-events:auto}
   </div>
 </div>
 
+<!-- fixed block modal -->
+<div class="modal" id="blockModal">
+  <div class="sheet">
+    <h2 data-i18n="blockT">Add a fixed block</h2>
+    <p data-i18n="blockP">A standing commitment (training, work, commute). It takes up time and is counted in conflicts and auto-combine.</p>
+    <div class="formrow"><label data-i18n="blockName">Name</label><input id="bTitle" maxlength="40" placeholder="Football training" data-i18n-ph="blockPh"></div>
+    <div class="formrow"><label data-i18n="day">Day</label><select id="bDay">
+      <option value="Mo">Mon</option><option value="Tu" selected>Tue</option><option value="We">Wed</option><option value="Th">Thu</option><option value="Fr">Fri</option>
+    </select></div>
+    <div class="formrow"><label data-i18n="from">From</label><input type="time" id="bStart" value="19:00" step="300"></div>
+    <div class="formrow"><label data-i18n="to">To</label><input type="time" id="bEnd" value="21:00" step="300"></div>
+    <p class="fine" id="blockErr"></p>
+    <div class="actions"><button class="ghost" id="blockCancel" data-i18n="back">Back</button><button class="primary" id="blockSave" data-i18n="save">Save</button></div>
+  </div>
+</div>
+
+<!-- auto-combine modal -->
+<div class="modal" id="autoModal">
+  <div class="sheet">
+    <h2 data-i18n="autoT">Find a conflict-free combination</h2>
+    <p data-i18n="autoP">Tries every section of the selected courses: one section per type, and any overlap with your other courses or fixed blocks is rejected.</p>
+    <label class="checkrow"><input type="checkbox" id="avoidEarly"> <span data-i18n="avoidEarly">Avoid classes starting before 09:00</span></label>
+    <p class="fine" id="autoStatus"></p>
+    <div class="actions"><button class="ghost" id="autoCancel" data-i18n="back">Back</button><button class="primary" id="autoRun" data-i18n="autoRun">Find combination</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
 <script>
 const DAYS = ['Mo','Tu','We','Th','Fr'];
 const I18N={
@@ -424,7 +484,11 @@ const I18N={
   y1:'Year 1',y2:'Year 2',y3:'Year 3',y4:'Year 4',postgrad:'Postgraduate',
   undergraduate:'Undergraduate',masters:"Master's / PhD",
   firstTime:'First time here?',firstHint:'Open the Guide in the top right. It shows how to search courses, pick sections, and copy your class numbers into SIS.',
-  gotIt:'Got it',aboutT:'About BetterSISSearch',aboutP:'A read-only course planner for CUHK-SZ students. Search courses, build a timetable, check conflicts, and copy the 4-digit class numbers.',conflict:'CONFLICT',selected:'SELECTED',select:'Select',noFixed:'No fixed meeting'},
+  gotIt:'Got it',aboutT:'About BetterSISSearch',aboutP:'A read-only course planner for CUHK-SZ students. Search courses, build a timetable, check conflicts, auto-combine sections, keep fixed blocks, and copy the 4-digit class numbers.',conflict:'CONFLICT',selected:'SELECTED',select:'Select',noFixed:'No fixed meeting',
+  autoCombine:'Auto-combine',myBlocks:'My fixed blocks',addBlock:'+ Add',noBlocks:'No fixed blocks yet',
+  blockT:'Add a fixed block',blockP:'A standing commitment (training, work, commute). It takes up time and is counted in conflicts and auto-combine.',blockName:'Name',blockPh:'Football training, part-time job…',save:'Save',blockRemove:'Remove',blockTimeErr:'End time must be after start time.',blockDefaultName:'Fixed block',blockLabel:'Fixed',
+  autoT:'Find a conflict-free combination',autoP:'Tries every section of the selected courses: one section per type, and any overlap with your other courses or fixed blocks is rejected.',avoidEarly:'Avoid classes starting before 09:00',autoRun:'Find combination',
+  autoNone:'No conflict-free combination found. Try removing a fixed block or turning off the morning rule.',autoNoOption:'{course} has no section that fits the current rules.',autoApplied:'Combination applied · {n} sections',autoUndo:'Undo'},
  zh:{remove:'取消选择',unitCourse:'门',pinnedTag:'已选',year:'年级',guide:'指南',about:'关于',confirm:'确认选课',theme:'切换明暗',lang:'EN',
   searchPh:'搜索课程代码、名称或教师…',
   subject:'学科',level:'年级',day:'星期',time:'时间',instructor:'教师',reset:'重置',
@@ -442,7 +506,11 @@ const I18N={
   y1:'大一',y2:'大二',y3:'大三',y4:'大四',postgrad:'研究生',
   undergraduate:'本科',masters:'硕士 / 博士',
   firstTime:'第一次来？',firstHint:'先看右上角的指南。里面讲了怎么搜课、选 section、把 class number 复制到 SIS。',
-  gotIt:'我知道了',aboutT:'关于 BetterSISSearch',aboutP:'面向 CUHK-SZ 学生的只读选课规划工具。搜课、排表、查冲突，复制 4 位 class number。',conflict:'冲突',selected:'已选',select:'选',noFixed:'无固定时间'}
+  gotIt:'我知道了',aboutT:'关于 BetterSISSearch',aboutP:'面向 CUHK-SZ 学生的只读选课规划工具。搜课、排表、查冲突、自动组合 section、固定个人安排，复制 4 位 class number。',conflict:'冲突',selected:'已选',select:'选',noFixed:'无固定时间',
+  autoCombine:'自动组合',myBlocks:'我的固定安排',addBlock:'+ 添加',noBlocks:'还没有固定安排',
+  blockT:'添加固定安排',blockP:'固定占用一段时间（训练、兼职、通勤等），参与冲突判断和自动组合。',blockName:'名称',blockPh:'周二晚足球训练、兼职…',save:'保存',blockRemove:'删除',blockTimeErr:'结束时间要晚于开始时间。',blockDefaultName:'固定安排',blockLabel:'固定',
+  autoT:'自动找不冲突的组合',autoP:'遍历已选课程的每一个 section，每种类型选一个；与其它课程或固定安排重叠的组合会被排除。',avoidEarly:'不要早八（09:00 前开始）',autoRun:'开始查找',
+  autoNone:'没有找到不冲突的组合。试试删除一个固定安排，或关掉「不要早八」。',autoNoOption:'{course} 没有符合当前规则的 section。',autoApplied:'已应用组合 · {n} 个 section',autoUndo:'撤销'}
 };
 let lang=localStorage.getItem('bss.lang')||'en';
 function t(k){ const d=I18N[lang]||I18N.en; return d[k]||I18N.en[k]||k; }
@@ -459,7 +527,7 @@ function applyI18n(){
 
 const DAY_LABEL = {Mo:'Mon',Tu:'Tue',We:'Wed',Th:'Thu',Fr:'Fri',Sa:'Sat',Su:'Sun'};
 const START_H = 8, END_H = 21;
-const LS = {year:'bss.year', sel:'bss.selected.v3'};
+const LS = {year:'bss.year', sel:'bss.selected.v3', blocks:'bss.blocks.v1'};
 
 let DATA = null;
 let year = localStorage.getItem(LS.year) || '';
@@ -469,6 +537,8 @@ let filters = {subject:new Set(), level:new Set(), day:new Set(), time:new Set()
 let timeRange = {start:'', end:''};
 let openPanel = null;
 let confirmed = false;
+let blocks=[];                 // personal fixed commitments: {id,title,day,start,end}
+try{ blocks=(JSON.parse(localStorage.getItem(LS.blocks))||[]).filter(b=>b&&b.day&&b.start&&b.end); }catch{ blocks=[]; }
 
 const $ = s => document.querySelector(s);
 const toMin = t => { const [h,m]=t.split(':').map(Number); return h*60+m; };
@@ -483,6 +553,81 @@ function isSelected(code){ return selected.some(p=>p.code===code); }
 function selOf(code){ return selected.find(p=>p.code===code); }
 function levelOf(c){ const m=c.catalog.match(/^\d/); return m ? c.catalog[0]+'000' : 'Other'; }
 function allSelectedMeetings(){ return selected.flatMap(meetingsOf); }
+/* ---------------- fixed blocks + auto-combine ---------------- */
+const EARLY_MIN = 9*60;
+function blockMeetings(){ return blocks.map(b=>({day:b.day,start:b.start,end:b.end,raw:`${DAY_LABEL[b.day]||b.day} ${b.start}–${b.end}`})); }
+function saveBlocks(){ localStorage.setItem(LS.blocks, JSON.stringify(blocks)); }
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function courseAssignments(c, avoidEarly){
+  // one section per type; sections with a meeting starting before 09:00 are dropped when asked
+  const types=[...new Set(c.sections.map(s=>s.type))];
+  let combos=[{}];
+  for(const ty of types){
+    let secs=c.sections.filter(s=>s.type===ty);
+    if(avoidEarly) secs=secs.filter(s=>s.meetings.every(m=>toMin(m.start)>=EARLY_MIN));
+    if(!secs.length) return [];
+    const next=[];
+    for(const base of combos) for(const s of secs) next.push(Object.assign({}, base, {[ty]:s.class_number}));
+    combos=next;
+  }
+  return combos.map(byType=>({
+    byType,
+    meetings:Object.values(byType).flatMap(cn=>section(c,cn).meetings)
+  }));
+}
+
+function solveCombination(avoidEarly){
+  const list=selected.map(p=>course(p.code)).filter(Boolean);
+  if(!list.length) return {error:'empty'};
+  const opts=list.map(c=>({c, list:courseAssignments(c, avoidEarly)}));
+  const bad=opts.find(o=>!o.list.length);
+  if(bad) return {error:'noOption', course:bad.c.code};
+  opts.sort((a,b)=>a.list.length-b.list.length);
+  let nodes=0; const LIMIT=400000;
+  const chosen=[];
+  function dfs(i, occ){
+    if(i===opts.length) return chosen.slice();
+    for(const o of opts[i].list){
+      if(++nodes>LIMIT) return null;
+      if(o.meetings.some(m=>occ.some(x=>overlap(m,x)))) continue;
+      chosen.push({code:opts[i].c.code, byType:o.byType});
+      const r=dfs(i+1, occ.concat(o.meetings));
+      if(r) return r;
+      chosen.pop();
+    }
+    return null;
+  }
+  const result=dfs(0, blockMeetings());
+  return result ? {result, nodes} : {error:'none', nodes};
+}
+
+function applyCombination(result){
+  const prev=JSON.parse(JSON.stringify(selected));
+  for(const ch of result){
+    const p=selOf(ch.code);
+    if(p) p.byType=Object.assign({}, ch.byType);
+    else selected.push({code:ch.code, byType:Object.assign({}, ch.byType)});
+  }
+  saveSel(); renderAll();
+  const n=result.reduce((sum,r)=>sum+Object.keys(r.byType).length, 0);
+  toast(t('autoApplied').replace('{n}', String(n)), ()=>{ selected=prev; saveSel(); renderAll(); });
+}
+
+let toastTimer=null;
+function toast(msg, undoFn){
+  const box=$('#toast'); if(!box) return;
+  box.innerHTML=''; box.appendChild(document.createTextNode(msg));
+  if(undoFn){
+    const b=document.createElement('button');
+    b.textContent=t('autoUndo');
+    b.onclick=()=>{ undoFn(); box.classList.remove('show'); };
+    box.appendChild(b);
+  }
+  box.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>box.classList.remove('show'), 6000);
+}
+
 
 /* ---------------- filters ---------------- */
 function courseMatchesFilters(c){
@@ -623,6 +768,23 @@ function renderPinned(){
   }
 }
 
+/* ---------------- left: fixed blocks ---------------- */
+function renderBlocks(){
+  const box=$('#blocksList'); if(!box) return;
+  if(!blocks.length){ box.innerHTML='<div class="empty" style="padding:10px 6px;font-size:11px">'+t('noBlocks')+'</div>'; return; }
+  box.innerHTML='';
+  for(const b of blocks){
+    const d=document.createElement('div'); d.className='bcard';
+    d.innerHTML=`<div class="r1"><span class="code">${esc(b.title)}</span><button class="remove">${t('blockRemove')}</button></div>
+      <div class="meta">${DAY_LABEL[b.day]||b.day} ${b.start}–${b.end}</div>`;
+    d.querySelector('.remove').onclick=e=>{
+      e.stopPropagation();
+      blocks=blocks.filter(x=>x.id!==b.id); saveBlocks(); renderAll();
+    };
+    box.appendChild(d);
+  }
+}
+
 /* ---------------- left: list ---------------- */
 function renderList(){
   const q=$('#q').value.trim();
@@ -652,7 +814,7 @@ function renderDetail(){
   const c=currentCode?course(currentCode):null;
   if(!c){ box.innerHTML='<div class="detailEmpty">'+t('pickCourse')+'</div>'; return; }
   const byType=pickedOf(c.code);
-  const otherM=selected.filter(p=>p.code!==c.code).flatMap(meetingsOf);
+  const otherM=selected.filter(p=>p.code!==c.code).flatMap(meetingsOf).concat(blockMeetings());
   const types=[...new Set(c.sections.map(s=>s.type))];
   const groups=types.map(ty=>{
     const rows=c.sections.filter(s=>s.type===ty).map(s=>{
@@ -697,6 +859,10 @@ function renderGrid(){
     for(const ps of pickedSections(p.code))
       for(const m of ps.section.meetings) items.push({p,c,s:ps.section,m});
   }
+  for(const b of blocks)
+    items.push({isBlock:true, p:null, c:{code:t('blockLabel'), title:b.title},
+      s:{section:'', type:'FIX', class_number:''},
+      m:{day:b.day, start:b.start, end:b.end, raw:`${DAY_LABEL[b.day]||b.day} ${b.start}–${b.end}`}});
   function place(it,ghost){
     const di=DAYS.indexOf(it.m.day); if(di<0) return;
     const s0=toMin(it.m.start), e0=toMin(it.m.end);
@@ -714,10 +880,17 @@ function renderGrid(){
     b.style.marginLeft='2px';
     if(ghost) b.style.zIndex='1';
     if(conflict) b.dataset.cf='×'+clash;
-    if(!covered) b.innerHTML=`<b>${it.c.code}</b><div class="meta">${it.s.section} · ${it.m.start}–${it.m.end}</div>`;
-    b.title=(ghost?'click to pin: ':'')+`${it.c.code} ${it.c.title}\n${it.s.section} ${it.s.type} (${it.s.class_number})\n${it.m.raw}`+(conflict?`\n\n${clash} ${t('unitCourse')} ${t('conflict')}`:'');
+    if(!covered){
+      b.innerHTML = it.isBlock
+        ? `<b>${esc(it.c.title)}</b><div class="meta">${it.m.start}–${it.m.end}</div>`
+        : `<b>${it.c.code}</b><div class="meta">${it.s.section} · ${it.m.start}–${it.m.end}</div>`;
+    }
+    b.title = it.isBlock
+      ? `${it.c.title}\n${it.m.raw}`
+      : (ghost?'click to pin: ':'')+`${it.c.code} ${it.c.title}\n${it.s.section} ${it.s.type} (${it.s.class_number})\n${it.m.raw}`+(conflict?`\n\n${clash} ${t('unitCourse')} ${t('conflict')}`:'');
     b.onclick=e=>{
       e.stopPropagation();
+      if(it.isBlock) return;
       if(ghost){ pickSection(it.c.code, it.s.class_number); return; }
       const group=items.filter(o=>overlap(it.m,o.m));
       if(group.length<=1){ currentCode=it.c.code; renderAll(); return; }
@@ -748,7 +921,7 @@ document.querySelector('aside.mid').addEventListener('click', e=>{
   if(e.target.closest('.secrow')) return;
   if(currentCode){ currentCode=null; renderAll(); }
 });
-function renderAll(){renderPinned();renderList();renderDetail();renderGrid();$('#confirmBtn').disabled=!selected.length;}
+function renderAll(){renderPinned();renderBlocks();renderList();renderDetail();renderGrid();$('#confirmBtn').disabled=!selected.length;$('#autoBtn').disabled=!selected.length;}
 
 /* ---------------- confirm ---------------- */
 let codeRows=[];
@@ -796,6 +969,36 @@ $('#copyCodes').onclick=async()=>{
   const text=codeRows.map(r=>r.cn).join('\n');
   await copyText(text);
   const a=$('#copyCodes'); a.textContent=t('copied'); setTimeout(()=>a.textContent=t('copyAllNote'),1400);
+};
+
+/* ---------------- fixed blocks ---------------- */
+$('#addBlockBtn').onclick=()=>{
+  $('#bTitle').value=''; $('#bDay').value='Tu'; $('#bStart').value='19:00'; $('#bEnd').value='21:00';
+  $('#blockErr').textContent=''; $('#blockModal').classList.add('show');
+};
+$('#blockCancel').onclick=()=>$('#blockModal').classList.remove('show');
+$('#blockSave').onclick=()=>{
+  const title=$('#bTitle').value.trim()||t('blockDefaultName');
+  const day=$('#bDay').value, start=$('#bStart').value, end=$('#bEnd').value;
+  if(!start||!end||toMin(end)<=toMin(start)){ $('#blockErr').textContent=t('blockTimeErr'); return; }
+  blocks.push({id:'b'+Date.now()+Math.floor(Math.random()*1000), title, day, start, end});
+  saveBlocks(); $('#blockModal').classList.remove('show'); renderAll();
+};
+
+/* ---------------- auto-combine ---------------- */
+$('#autoBtn').onclick=()=>{
+  $('#avoidEarly').checked=false; $('#autoStatus').textContent='';
+  $('#autoModal').classList.add('show');
+};
+$('#autoCancel').onclick=()=>$('#autoModal').classList.remove('show');
+$('#autoRun').onclick=()=>{
+  const avoid=$('#avoidEarly').checked;
+  const r=solveCombination(avoid);
+  if(r.error==='none'){ $('#autoStatus').textContent=t('autoNone'); return; }
+  if(r.error==='noOption'){ $('#autoStatus').textContent=t('autoNoOption').replace('{course}', r.course); return; }
+  if(r.error==='empty'){ $('#autoModal').classList.remove('show'); return; }
+  $('#autoModal').classList.remove('show');
+  applyCombination(r.result);
 };
 
 /* ---------------- year ---------------- */

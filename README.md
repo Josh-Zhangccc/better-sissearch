@@ -31,7 +31,7 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课排表器。查课、排�
 
 **问题**：SIS 的课程检索只能查课，不能模拟一张时间表。学生要在检索结果、课程时间、自己的课表之间来回切换，手动比对冲突，最后还要回到 SIS 输入 class number。检索时每次都要重选年级。流程重复，容易出错。
 
-**做法**：把课表数据一次性抓成静态快照，在浏览器里做可视化排课。选中课程后，课表立刻显示，冲突标红但允许保留。确认后输出每门 section 的 class number，复制到 SIS 购物车即可。
+**做法**：把课表数据一次性抓成静态快照，在浏览器里做可视化排课。选中课程后，课表立刻显示，冲突标红但允许保留。排不顺时可以点「自动组合」，让工具遍历已选课程的 section 找一组互不冲突的安排（可勾「不要早八」）；训练、兼职这类固定安排也能先占住时间，一起参与冲突判断。确认后输出每门 section 的 class number，复制到 SIS 购物车即可。
 
 这里有一个容易被忽略的点。**课程编码**（3 个字母加 4 位数字，如 `MAT 3004`）只是课程标识；SIS 选课真正要输入的是 **class number**（4 位数字，每个 section 一个，如 `1692`）。知道 class number 就能在 SIS 里直接定位课程，省掉一次检索。BetterSISSearch 的价值，就是把“查课、排表、拿 class number”连成一条线。
 
@@ -65,8 +65,10 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课排表器。查课、排�
 2. 左侧搜索：课程编码、课名、教师。筛选：学科、层级、星期、时段、教师。
 3. 点击课程，查看它的 section。实线是已排入课表的 section，虚线是其他可选 section。时间重叠会标红。
 4. 在重叠区域重复点击，可以在几个冲突 section 之间循环切换。点击空白处取消选中。
-5. 确认选择。每个 class number 都能单独复制，按 SIS 的顺序逐个粘贴到 Enrollment Shopping Cart 的 Enter Class Nbr。
-6. 教程（含截图）：`tutorial.html`
+5. 点「自动组合」：工具遍历已选课程的 section，给出一组互不冲突的安排；勾选「不要早八」会排除 09:00 前开始的时间。结果直接落到课表，旁边有「撤销」。
+6. 有固定安排（如周二晚足球训练）时，点「我的固定安排 → + 添加」占用一段时间；它会显示在课表里，并参与冲突判断和自动组合。
+7. 确认选择。每个 class number 都能单独复制，按 SIS 的顺序逐个粘贴到 Enrollment Shopping Cart 的 Enter Class Nbr。
+8. 教程（含截图）：`tutorial.html`
 
 无需登录。不写 SIS。不修改任何课程数据。
 
@@ -91,7 +93,7 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课排表器。查课、排�
 - **AI 工具**：DeepSeek Harness（dsh）Web 对话，模型 `deepseek-flash`，含 1 个数据抓取子代理。
 - **浏览器自动化**：ego，用于自测交互与截图（约 128 次截图调用）。
 - **人工部分**：需求定义、交互决策、文案审核、数据核验、部署判断。
-- **过程明细**：`AI_COLLABORATION_LOG.md`（6 轮迭代 + 11-24 / 11-28 两次补记，47 条自然语言指令）。
+- **过程明细**：`AI_COLLABORATION_LOG.md`（6 轮迭代 + 3 篇补记：11-24、11-28 数据、11-28 功能）。
 
 ### 用户反馈与改进
 
@@ -101,15 +103,15 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课排表器。查课、排�
 
 | 用户 | 使用场景 | 反馈 | 对应的改进 | 证据 |
 |---|---|---|---|---|
-| U1（高年级理工科，同专业，2026-11-24） | 完整选课流程：18 学分；无早八；留出周二晚足球训练 | 10 分钟排完；同学用 SIS 约 2 小时，卡在时间查重 | 待做：自动组合 / 不冲突 section 推荐、固定时间块 | 作者转述；已获匿名记录同意 |
+| U1（高年级理工科，同专业，2026-11-24） | 完整选课流程：18 学分；无早八；留出周二晚足球训练 | 10 分钟排完；同学用 SIS 约 2 小时，卡在时间查重 | 已做：自动组合（可选不要早八）+ 个人固定安排，冲突实时对齐 | 应用内功能；见「怎么用」第 5、6 步与 `AI_COLLABORATION_LOG.md` |
 | U2（低年级心理学，2026-11-24） | 简单体验后给出流程建议 | class number 只能逐条输入；“全部复制”用不上，实际是复制一个、去 SIS 粘贴、再下一个 | 已做：每行单独复制 + “复制下一个”进度（0/2 → 2/2），全部复制降为备用 | 截图见 `assets/fig-confirm.png`；线上版已更新 |
 
 **根据反馈计划改进**（提交前完成并补到上表）：
 
 - ✅ 逐条复制 class number：每行独立复制 + “复制下一个”进度，全部复制降为备用（已完成，见 U2）；
-- 自动找“不冲突的 section 组合”，可选“不要早八”；
-- 支持个人固定安排（如周二晚足球训练），参与冲突判断；
-- 显示空闲时段，方便“找时间加课”。
+- ✅ 自动找“不冲突的 section 组合”，可选“不要早八”（已完成，见 U1）；
+- ✅ 支持个人固定安排（如周二晚足球训练），参与冲突判断（已完成，见 U1）；
+- 显示空闲时段：评估后暂不做（优先用自动组合解决“找时间加课”，避免界面再堆信息）。
 
 说明：反馈来自本学期选课期的真实使用。不公开用户身份。改进会同步到本仓库的提交记录与截图。
 
@@ -134,7 +136,7 @@ BetterSISSearch is a course planning simulator for CUHK-SZ students. Search cour
 
 **Problem**: SIS course search finds courses but cannot simulate a timetable. Students switch between search results, meeting times and their own schedule, check conflicts by hand, then type class numbers back into SIS. The search flow also asks for the year every time. It is repetitive and error-prone.
 
-**Approach**: scrape the class schedule once into a static snapshot, then plan visually in the browser. Selected sections appear on the timetable at once. Conflicts are marked red but allowed. Confirmation outputs each section's class number for the SIS shopping cart.
+**Approach**: scrape the class schedule once into a static snapshot, then plan visually in the browser. Selected sections appear on the timetable at once. Conflicts are marked red but allowed. When a plan gets stuck, **Auto-combine** searches the selected courses for a clash-free set of sections (with an optional no-morning rule), and personal fixed blocks such as training or a part-time job can hold time and take part in the check. Confirmation outputs each section's class number for the SIS shopping cart.
 
 One point is easy to miss. A **course code** (three letters plus four digits, e.g. `MAT 3004`) is only the catalog identifier. What SIS actually enrolls by is the **class number** (four digits, one per section, e.g. `1692`). With the class number you can locate a course in SIS directly, without searching again. BetterSISSearch connects the three steps: search, plan, and class numbers.
 
@@ -168,8 +170,10 @@ A senior classmate's test: with the courses already known, **10 minutes** to bui
 2. Search on the left: course code, title, instructor. Filter by subject, level, weekday, time and instructor.
 3. Click a course to see its sections. Solid blocks are scheduled sections. Dashed blocks are alternatives. Overlaps turn red.
 4. Click an overlapping area again to cycle through conflicting sections. Click empty space to clear the selection.
-5. Confirm. Copy each class number separately, then enter them one by one in the SIS Enrollment Shopping Cart (Enter Class Nbr).
-6. Tutorial with screenshots: `tutorial.html`
+5. Click **Auto-combine**: it walks the sections of the selected courses and returns a clash-free set; the no-morning option drops anything starting before 09:00. The result lands on the timetable, with an Undo next to it.
+6. For a standing commitment (Tuesday football, a part-time job), use **My fixed blocks → + Add**; the block shows on the timetable and takes part in conflict checks and Auto-combine.
+7. Confirm. Copy each class number separately, then enter them one by one in the SIS Enrollment Shopping Cart (Enter Class Nbr).
+8. Tutorial with screenshots: `tutorial.html`
 
 No login. Nothing is written to SIS. No course data is modified.
 
@@ -194,7 +198,7 @@ No login. Nothing is written to SIS. No course data is modified.
 - **AI tool**: DeepSeek Harness (dsh) web session, model `deepseek-flash`, plus one scraping subagent.
 - **Browser automation**: ego for interaction self-testing and screenshots (~128 screenshots).
 - **Human work**: requirements, interaction decisions, copy review, data verification, deployment decisions.
-- **Details**: `AI_COLLABORATION_LOG.md` (6 rounds plus two follow-up notes on 11-24 and 11-28; 47 natural-language instructions).
+- **Details**: `AI_COLLABORATION_LOG.md` (6 rounds plus three follow-up notes: 11-24, the 11-28 data note, and the 11-28 feature note).
 
 ### User feedback and improvements
 
@@ -204,15 +208,15 @@ No login. Nothing is written to SIS. No course data is modified.
 
 | User | Context | Feedback | Change made | Evidence |
 |---|---|---|---|---|
-| U1 (senior STEM, same major, 2026-11-24) | Full enrolment flow: 18 credits; no 8 a.m.; Tuesday evening football | 10 minutes vs ~2 hours for peers; conflict checking was the blocker | Planned: conflict-free section combinations, fixed personal blocks | Author's summary; consent for anonymised record |
+| U1 (senior STEM, same major, 2026-11-24) | Full enrolment flow: 18 credits; no 8 a.m.; Tuesday evening football | 10 minutes vs ~2 hours for peers; conflict checking was the blocker | Done: Auto-combine (no-morning option) + fixed personal blocks, conflicts aligned live | In-app feature; see How to use steps 5–6 and `AI_COLLABORATION_LOG.md` |
 | U2 (lower-year psychology student, 2026-11-24) | Brief trial, then a workflow suggestion | Class numbers are entered one by one in SIS; “Copy all” is not usable; the real flow is copy one, paste in SIS, then the next | Done: per-row copy button + “Copy next” progress (0/2 → 2/2); copy-all kept as optional | Screenshot: `assets/fig-confirm.png`; live site updated |
 
 **Planned improvements from this feedback** (to be finished and added to the table before submission):
 
 - ✅ One-by-one class number copying: per-row copy button + “Copy next” progress; copy-all kept as optional (done, see U2);
-- Find conflict-free section combinations automatically, with a “no 8 a.m.” option;
-- Support fixed personal blocks (e.g. Tuesday evening football) in conflict checking;
-- Show free slots, to make it easy to find time for extra courses.
+- ✅ Automatic conflict-free section combinations, with a “no 8 a.m.” option (done, see U1);
+- ✅ Fixed personal blocks (e.g. Tuesday evening football) in conflict checking (done, see U1);
+- Free-slot display: deliberately not built (Auto-combine already answers “when can I add a course” without piling more UI on).
 
 Notes: feedback comes from real use during this term's enrolment period. User identities are not published. Improvements will be tracked in the repository history and screenshots.
 
