@@ -136,6 +136,10 @@ const I18N={
     document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const v=d[el.dataset.i18nHtml]; if(v) el.innerHTML=v; });
     document.title=d.title;
     document.documentElement.lang=lang==='zh'?'zh-CN':'en';
+    const dir = lang==='zh' ? 'assets/zh/' : 'assets/';
+    document.querySelectorAll('img[data-fig]').forEach(img=>{
+      img.src = dir + 'fig-' + img.dataset.fig + (img.classList.contains('hd') ? '-dark' : '') + '.png';
+    });
   });
 })();
 </script>
@@ -161,8 +165,8 @@ const I18N={
       <p data-i18n="s1p1">Search by course code like MAT 3004, a title, or an instructor.</p>
       <p data-i18n="s1p2">Filter by subject, level, weekday, time range, and instructor.</p>
       <div class="shot">
-        <img class="hl" src="assets/fig-find.png" alt="Search and filters">
-        <img class="hd" src="assets/fig-find-dark.png" alt="Search and filters">
+        <img class="hl" data-fig="find" src="assets/fig-find.png" alt="Search and filters">
+        <img class="hd" data-fig="find" src="assets/fig-find-dark.png" alt="Search and filters">
         <div class="cap" data-i18n="cap1">Left panel: search and filters.</div>
       </div>
     </div>
@@ -176,8 +180,8 @@ const I18N={
       <p data-i18n="s2p2">Solid blocks are the sections already in your timetable. Dashed blocks are other sections you can choose.</p>
       <p data-i18n="s2p3">Overlapping sections turn red. They are not blocked.</p>
       <div class="shot">
-        <img class="hl" src="assets/fig-sections.png" alt="Sections and conflicts">
-        <img class="hd" src="assets/fig-sections-dark.png" alt="Sections and conflicts">
+        <img class="hl" data-fig="sections" src="assets/fig-sections.png" alt="Sections and conflicts">
+        <img class="hd" data-fig="sections" src="assets/fig-sections-dark.png" alt="Sections and conflicts">
         <div class="cap" data-i18n="cap2">Middle panel: sections. Right panel: your week.</div>
       </div>
     </div>
@@ -191,8 +195,8 @@ const I18N={
       <p data-i18n="s3p2">In SIS, open Enrollment, then Enrollment Shopping Cart. Type each number in Enter Class Nbr.</p>
       <div class="two">
         <div class="shot">
-          <img class="hl" src="assets/fig-confirm.png" alt="Class numbers">
-          <img class="hd" src="assets/fig-confirm-dark.png" alt="Class numbers">
+          <img class="hl" data-fig="confirm" src="assets/fig-confirm.png" alt="Class numbers">
+          <img class="hd" data-fig="confirm" src="assets/fig-confirm-dark.png" alt="Class numbers">
           <div class="cap" data-i18n="cap3">One number per section.</div>
         </div>
         <div class="shot"><img src="assets/sis-cart.png" alt="SIS cart"><div class="cap" data-i18n="capSis">SIS enrollment cart.</div></div>
@@ -208,19 +212,19 @@ const I18N={
       <p data-i18n="s4p2">Add standing commitments (football training, a part-time job) under My fixed blocks. They take up time on the timetable and are counted in conflicts and Auto-combine.</p>
       <div class="two align">
         <div class="shot">
-          <img class="hl" src="assets/fig-blocks.png" alt="Add a fixed block">
-          <img class="hd" src="assets/fig-blocks-dark.png" alt="Add a fixed block">
+          <img class="hl" data-fig="blocks" src="assets/fig-blocks.png" alt="Add a fixed block">
+          <img class="hd" data-fig="blocks" src="assets/fig-blocks-dark.png" alt="Add a fixed block">
           <div class="cap" data-i18n="cap4">Add a fixed block: name, day and time.</div>
         </div>
         <div class="shot">
-          <img class="hl" src="assets/fig-auto-modal.png" alt="Auto-combine options">
-          <img class="hd" src="assets/fig-auto-modal-dark.png" alt="Auto-combine options">
+          <img class="hl" data-fig="auto-modal" src="assets/fig-auto-modal.png" alt="Auto-combine options">
+          <img class="hd" data-fig="auto-modal" src="assets/fig-auto-modal-dark.png" alt="Auto-combine options">
           <div class="cap" data-i18n="cap4b">Auto-combine, with the optional no-morning rule.</div>
         </div>
       </div>
       <div class="shot" style="margin-top:10px">
-        <img class="hl" src="assets/fig-auto-result.png" alt="Applied combination">
-        <img class="hd" src="assets/fig-auto-result-dark.png" alt="Applied combination">
+        <img class="hl" data-fig="auto-result" src="assets/fig-auto-result.png" alt="Applied combination">
+        <img class="hd" data-fig="auto-result" src="assets/fig-auto-result-dark.png" alt="Applied combination">
         <div class="cap" data-i18n="cap4c">Applied: a clash-free set lands on the timetable; the toast offers Undo.</div>
       </div>
     </div>
