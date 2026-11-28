@@ -892,7 +892,7 @@ function renderGrid(){
       e.stopPropagation();
       if(it.isBlock) return;
       if(ghost){ pickSection(it.c.code, it.s.class_number); return; }
-      const group=items.filter(o=>overlap(it.m,o.m));
+      const group=items.filter(o=>overlap(it.m,o.m) && !o.isBlock);
       if(group.length<=1){ currentCode=it.c.code; renderAll(); return; }
       const idx=group.findIndex(o=>o.c.code===currentCode);
       currentCode=group[(idx+1)%group.length].c.code;
