@@ -91,7 +91,7 @@ BetterSISSearch 是一个面向 CUHK-SZ 学生的选课排表器。查课、排�
 - **AI 工具**：DeepSeek Harness（dsh）Web 对话，模型 `deepseek-flash`，含 1 个数据抓取子代理。
 - **浏览器自动化**：ego，用于自测交互与截图（约 128 次截图调用）。
 - **人工部分**：需求定义、交互决策、文案审核、数据核验、部署判断。
-- **过程明细**：`AI_COLLABORATION_LOG.md`（6 轮迭代，47 条自然语言指令）。
+- **过程明细**：`AI_COLLABORATION_LOG.md`（6 轮迭代 + 11-24 / 11-28 两次补记，47 条自然语言指令）。
 
 ### 用户反馈与改进
 
@@ -194,7 +194,7 @@ No login. Nothing is written to SIS. No course data is modified.
 - **AI tool**: DeepSeek Harness (dsh) web session, model `deepseek-flash`, plus one scraping subagent.
 - **Browser automation**: ego for interaction self-testing and screenshots (~128 screenshots).
 - **Human work**: requirements, interaction decisions, copy review, data verification, deployment decisions.
-- **Details**: `AI_COLLABORATION_LOG.md` (6 rounds, 47 natural-language instructions).
+- **Details**: `AI_COLLABORATION_LOG.md` (6 rounds plus two follow-up notes on 11-24 and 11-28; 47 natural-language instructions).
 
 ### User feedback and improvements
 
